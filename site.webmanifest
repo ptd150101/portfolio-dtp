@@ -1,0 +1,9 @@
+{
+  "name": "Đạt Tiến — Engineering Portfolio",
+  "short_name": "Đạt Tiến",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#080a0f",
+  "theme_color": "#080a0f",
+  "icons": [{"src":"assets/favicon.svg","sizes":"any","type":"image/svg+xml"}]
+}
