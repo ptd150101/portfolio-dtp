@@ -1,20 +1,55 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-  <defs><linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#080a0f"/><stop offset="1" stop-color="#0c2118"/></linearGradient><linearGradient id="a" x1="0" x2="1"><stop stop-color="#66e4a7"/><stop offset="1" stop-color="#62d9ff"/></linearGradient></defs>
-  <rect width="1200" height="630" fill="url(#bg)"/><circle cx="960" cy="290" r="360" fill="#66e4a7" opacity=".08"/>
-  <text x="70" y="92" fill="#66e4a7" font-family="monospace" font-size="18" font-weight="700">CASE STUDY 02</text>
-  <text x="70" y="202" fill="url(#a)" font-family="system-ui,sans-serif" font-size="88" font-weight="800" letter-spacing="-5">RemoteKey</text>
-  <text x="72" y="264" fill="#a4afc2" font-family="system-ui,sans-serif" font-size="23">Shortcut-only Android → Windows input bridge</text>
-  <g transform="translate(600 125)">
-    <rect width="190" height="300" rx="28" fill="#111722" stroke="#66e4a7" stroke-opacity=".35"/>
-    <rect x="22" y="30" width="146" height="165" rx="13" fill="#080b11"/>
-    <rect x="26" y="225" width="60" height="36" rx="8" fill="#66e4a7"/><rect x="96" y="225" width="60" height="36" rx="8" fill="#66e4a7"/>
-    <text x="56" y="248" text-anchor="middle" fill="#07120d" font-family="monospace" font-size="12" font-weight="800">ALT</text><text x="126" y="248" text-anchor="middle" fill="#07120d" font-family="monospace" font-size="12" font-weight="800">TAB</text>
-    <path d="M215 150H335" stroke="#66e4a7" stroke-width="3" stroke-dasharray="10 8"/>
-    <circle cx="270" cy="150" r="7" fill="#66e4a7"/>
-    <text x="274" y="130" text-anchor="middle" fill="#a4afc2" font-family="monospace" font-size="12">TCP JSONL</text>
-    <rect x="360" y="28" width="220" height="260" rx="18" fill="#111722" stroke="#62d9ff" stroke-opacity=".35"/>
-    <rect x="382" y="52" width="176" height="145" rx="10" fill="#080b11"/>
-    <text x="470" y="235" text-anchor="middle" fill="#62d9ff" font-family="monospace" font-size="14" font-weight="700">WIN32 SENDINPUT</text>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#080a0f"/><stop offset="1" stop-color="#0c2118"/></linearGradient>
+    <linearGradient id="a" x1="0" x2="1"><stop stop-color="#66e4a7"/><stop offset="1" stop-color="#62d9ff"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="965" cy="280" r="360" fill="#66e4a7" opacity=".07"/>
+  <text x="70" y="82" fill="#66e4a7" font-family="monospace" font-size="18" font-weight="700">CASE STUDY 02 · ANDROID REMOTE DESKTOP PAIN</text>
+  <text x="70" y="186" fill="url(#a)" font-family="system-ui,sans-serif" font-size="86" font-weight="800" letter-spacing="-5">RemoteKey</text>
+  <text x="72" y="244" fill="#a4afc2" font-family="system-ui,sans-serif" font-size="22">Restore Alt+Tab and Win+E when Android intercepts them</text>
+
+  <g transform="translate(72 290)">
+    <rect width="310" height="190" rx="22" fill="#111722" stroke="#9baac7" stroke-opacity=".24"/>
+    <text x="22" y="30" fill="#778298" font-family="monospace" font-size="11" font-weight="700">ANDROID TABLET</text>
+    <g transform="translate(22 48)">
+      <rect width="80" height="31" rx="8" fill="#20204d"/><text x="40" y="20" text-anchor="middle" fill="#fff" font-family="monospace" font-size="10" font-weight="700">PARSEC</text>
+      <rect x="88" width="88" height="31" rx="8" fill="#174b89"/><text x="132" y="20" text-anchor="middle" fill="#fff" font-family="monospace" font-size="10" font-weight="700">STARDESK</text>
+      <rect x="184" width="104" height="31" rx="8" fill="#102a42"/><text x="236" y="20" text-anchor="middle" fill="#fff" font-family="monospace" font-size="10" font-weight="700">STEAM LINK</text>
+    </g>
+    <rect x="22" y="101" width="82" height="42" rx="9" fill="#66e4a7"/><rect x="113" y="101" width="82" height="42" rx="9" fill="#66e4a7"/>
+    <text x="63" y="128" text-anchor="middle" fill="#07120d" font-family="monospace" font-size="13" font-weight="800">ALT</text><text x="154" y="128" text-anchor="middle" fill="#07120d" font-family="monospace" font-size="13" font-weight="800">TAB</text>
+    <text x="22" y="169" fill="#ff7f8f" font-family="monospace" font-size="12" font-weight="700">ANDROID CONSUMES THE SHORTCUT</text>
   </g>
-  <text x="72" y="560" fill="#778298" font-family="monospace" font-size="16">KOTLIN · ACCESSIBILITYSERVICE · TCP · PYTHON · WIN32</text>
+
+  <g transform="translate(414 354)">
+    <path d="M0 0H192" stroke="#ff7f8f" stroke-width="3" stroke-dasharray="10 8"/>
+    <circle cx="96" cy="0" r="24" fill="#16080b" stroke="#ff7f8f" stroke-width="3"/>
+    <path d="M84 -12L108 12M108 -12L84 12" stroke="#ff7f8f" stroke-width="4"/>
+    <text x="96" y="47" text-anchor="middle" fill="#a4afc2" font-family="monospace" font-size="11">REMOTE APP NEVER SEES IT</text>
+  </g>
+
+  <g transform="translate(636 290)">
+    <rect width="300" height="190" rx="18" fill="#111722" stroke="#62d9ff" stroke-opacity=".32"/>
+    <text x="22" y="30" fill="#778298" font-family="monospace" font-size="11" font-weight="700">WINDOWS HOST</text>
+    <rect x="24" y="50" width="252" height="94" rx="10" fill="#080b11"/>
+    <rect x="42" y="70" width="120" height="50" rx="6" fill="#162238"/><rect x="132" y="82" width="120" height="50" rx="6" fill="#102c23"/>
+    <text x="150" y="169" text-anchor="middle" fill="#ff7f8f" font-family="monospace" font-size="12" font-weight="700">NO ALT+TAB EVENT</text>
+  </g>
+
+  <g transform="translate(72 516)">
+    <rect width="864" height="54" rx="15" fill="#0d3525" stroke="#66e4a7" stroke-opacity=".4"/>
+    <rect x="14" y="12" width="31" height="31" rx="8" fill="#66e4a7"/><text x="29.5" y="32" text-anchor="middle" fill="#07120d" font-family="monospace" font-size="11" font-weight="900">RK</text>
+    <text x="58" y="34" fill="#f5f7fb" font-family="monospace" font-size="12" font-weight="700">ACCESSIBILITYSERVICE</text>
+    <path d="M235 27H350" stroke="#66e4a7" stroke-width="2" stroke-dasharray="8 6"/><circle cx="290" cy="27" r="5" fill="#66e4a7" filter="url(#glow)"/>
+    <text x="365" y="33" fill="#66e4a7" font-family="monospace" font-size="12" font-weight="700">TCP JSONL</text>
+    <path d="M460 27H575" stroke="#66e4a7" stroke-width="2" stroke-dasharray="8 6"/>
+    <text x="590" y="34" fill="#f5f7fb" font-family="monospace" font-size="12" font-weight="700">WINDOWS AGENT → SENDINPUT</text>
+  </g>
+  <text x="972" y="335" fill="#66e4a7" font-family="system-ui,sans-serif" font-size="22" font-weight="750">Normal typing stays</text>
+  <text x="972" y="366" fill="#a4afc2" font-family="system-ui,sans-serif" font-size="18">inside the remote app.</text>
+  <text x="972" y="411" fill="#66e4a7" font-family="system-ui,sans-serif" font-size="22" font-weight="750">Only shortcuts use</text>
+  <text x="972" y="442" fill="#a4afc2" font-family="system-ui,sans-serif" font-size="18">the side channel.</text>
+  <text x="72" y="608" fill="#778298" font-family="monospace" font-size="15">KOTLIN · ACCESSIBILITYSERVICE · TCP · PYTHON · WIN32 SENDINPUT</text>
 </svg>
