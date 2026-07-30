@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ptd150101.github.io/portfolio-dtp/sitemap.xml
