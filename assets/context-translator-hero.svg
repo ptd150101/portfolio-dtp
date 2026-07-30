@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+<title id="title">Context Video Translator product overview</title><desc id="desc">Portfolio product reconstruction based on the implemented Context Video Translator interface.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07101d"/><stop offset="1" stop-color="#0e1727"/></linearGradient>
+  <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#9b8cff"/><stop offset=".55" stop-color="#62d9ff"/><stop offset="1" stop-color="#66e4a7"/></linearGradient>
+  <linearGradient id="video" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#102c45"/><stop offset=".55" stop-color="#1d5261"/><stop offset="1" stop-color="#3d6074"/></linearGradient>
+  <filter id="shadow"><feDropShadow dx="0" dy="18" stdDeviation="28" flood-color="#000" flood-opacity=".42"/></filter>
+  <pattern id="grid" width="42" height="42" patternUnits="userSpaceOnUse"><path d="M42 0H0V42" fill="none" stroke="#93a4bd" stroke-opacity=".07"/></pattern>
+</defs>
+<rect width="100%" height="100%" rx="34" fill="url(#bg)"/><rect width="100%" height="100%" rx="34" fill="url(#grid)"/>
+<rect x="96" y="90" width="1408" height="720" rx="28" fill="#0b111c" stroke="#9aabc5" stroke-opacity=".28" filter="url(#shadow)"/>
+<rect x="96" y="90" width="1408" height="64" rx="28" fill="#141d2b"/><circle cx="132" cy="122" r="8" fill="#ff7f8f"/><circle cx="158" cy="122" r="8" fill="#ffcc66"/><circle cx="184" cy="122" r="8" fill="#66e4a7"/><rect x="226" y="106" width="950" height="32" rx="16" fill="#0a101a" stroke="#9aabc5" stroke-opacity=".15"/><text x="254" y="127" fill="#a4afc2" font-family="Inter,Arial" font-size="15">video.example/watch · native captions available</text>
+<rect x="126" y="184" width="1348" height="566" rx="20" fill="url(#video)"/>
+<circle cx="1130" cy="362" r="180" fill="#8be7ff" fill-opacity=".10"/><path d="M126 610C330 496 466 530 650 620S1040 710 1474 520V750H126Z" fill="#07131d" fill-opacity=".82"/>
+<rect x="162" y="214" width="230" height="38" rx="19" fill="#080d16" fill-opacity=".82"/><text x="188" y="239" fill="#62d9ff" font-family="Inter,Arial" font-size="15" font-weight="700">YOUTUBE · JAPANESE</text>
+<rect x="366" y="500" width="866" height="164" rx="18" fill="#05070b" fill-opacity=".88" stroke="#62d9ff" stroke-opacity=".26"/>
+<text x="799" y="544" text-anchor="middle" fill="#f5f7fb" font-family="Noto Sans JP,Arial" font-size="35" font-weight="700">昨日、日本語を勉強しました。</text>
+<rect x="490" y="562" width="618" height="4" rx="2" fill="#293444"/><rect x="490" y="562" width="304" height="4" rx="2" fill="url(#accent)"/>
+<text x="799" y="618" text-anchor="middle" fill="#9de9ff" font-family="Inter,Arial" font-size="27">Hôm qua tôi đã học tiếng Nhật.</text>
+<rect x="144" y="700" width="1310" height="6" rx="3" fill="#2a3546"/><rect x="144" y="700" width="520" height="6" rx="3" fill="#ff4b66"/><circle cx="664" cy="703" r="10" fill="#fff"/>
+<g transform="translate(1200 190)"><rect width="242" height="112" rx="16" fill="#0b111c" fill-opacity=".92" stroke="#66e4a7" stroke-opacity=".35"/><text x="22" y="34" fill="#66e4a7" font-family="Inter,Arial" font-size="14" font-weight="800">TRANSLATION READY</text><text x="22" y="62" fill="#f5f7fb" font-family="Inter,Arial" font-size="16">Context window · ±5 cues</text><text x="22" y="88" fill="#a4afc2" font-family="Inter,Arial" font-size="14">Cached · synchronized</text></g>
+<text x="96" y="54" fill="#f5f7fb" font-family="Inter,Arial" font-size="24" font-weight="800">Context Video Translator</text><text x="1504" y="54" text-anchor="end" fill="#a4afc2" font-family="Inter,Arial" font-size="15">Native timing · Context-aware translation · Study mode</text></svg>
