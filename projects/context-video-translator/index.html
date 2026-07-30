@@ -4,264 +4,163 @@
   <meta charset="utf-8">
   <script>document.documentElement.classList.add('js')</script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Context Video Translator — Case Study by Đạt Tiến</title>
-  <meta name="description" content="Engineering case study for a context-aware bilingual subtitle extension supporting YouTube, Udemy, OpenAI-compatible providers, IndexedDB cache and Japanese study mode.">
+  <title>Context Video Translator — Product Case Study by Đạt Tiến</title>
+  <meta name="description" content="A concise product case study for Context Video Translator: the subtitle translation problem, the context-aware solution, YouTube and Udemy demos, Japanese study mode and key engineering decisions.">
   <meta name="theme-color" content="#080a0f">
   <meta property="og:type" content="article">
-  <meta property="og:title" content="Context Video Translator — Engineering Case Study">
-  <meta property="og:description" content="Race-safe caption capture, ahead-of-time translation scheduling, multi-source Udemy discovery and Japanese study tooling.">
-  <meta property="og:image" content="https://ptd150101.github.io/portfolio-dtp/assets/og-translator.svg">
+  <meta property="og:title" content="Context Video Translator — Product Case Study">
+  <meta property="og:description" content="Context-aware bilingual subtitles for YouTube and Udemy, with synchronized rendering and optional Japanese study tools.">
+  <meta property="og:image" content="https://ptd150101.github.io/portfolio-dtp/assets/context-translator-hero.svg">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="stylesheet" href="../../assets/context-translator.css">
   <script src="../../assets/script.js" defer></script>
   <link rel="canonical" href="https://ptd150101.github.io/portfolio-dtp/projects/context-video-translator/">
   <link rel="manifest" href="../../site.webmanifest">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareSourceCode","name":"Context Video Translator","codeRepository":"https://github.com/ptd150101/context-video-translator","programmingLanguage":"JavaScript","author":{"@type":"Person","name":"Phan Tiến Đạt"},"description":"Context-aware bilingual subtitle extension for YouTube and Udemy."}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareSourceCode","name":"Context Video Translator","codeRepository":"https://github.com/ptd150101/context-video-translator","programmingLanguage":"JavaScript","author":{"@type":"Person","name":"Phan Tiến Đạt"},"description":"A browser extension that translates native YouTube and Udemy captions with surrounding context and renders synchronized bilingual subtitles."}</script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header" data-header>
     <div class="container nav-wrap">
-      <a class="brand" href="../../"><span class="brand-mark">DT</span><span>Đạt Tiến</span></a>
+      <a class="brand" href="../../" aria-label="Đạt Tiến home"><span class="brand-mark">DT</span><span>Đạt Tiến</span></a>
       <nav class="nav-links" data-nav-links aria-label="Primary navigation">
         <a href="../../#work">Work</a><a href="../../#principles">Principles</a><a href="../../#about">About</a><a href="../../resume/">Résumé</a><a href="https://github.com/ptd150101/context-video-translator" target="_blank" rel="noreferrer">Repository ↗</a>
       </nav>
-      <div class="button-row"><button class="icon-button" type="button" data-theme-toggle aria-label="Switch theme">◑</button><button class="icon-button mobile-toggle" type="button" data-menu-toggle aria-expanded="false">Menu</button></div>
+      <div class="button-row"><button class="icon-button" type="button" data-theme-toggle aria-label="Switch theme">◑</button><button class="icon-button mobile-toggle" type="button" data-menu-toggle aria-expanded="false" aria-label="Open navigation">Menu</button></div>
     </div>
   </header>
 
   <main id="main">
-    <section class="project-hero">
+    <section class="project-hero translator-hero">
       <div class="container">
         <div class="breadcrumbs"><a href="../../">Home</a><span>/</span><a href="../../#work">Projects</a><span>/</span><span>Context Video Translator</span></div>
-        <div class="project-hero-grid">
+        <div class="project-hero-grid translator-hero-grid">
           <div class="reveal">
-            <span class="project-kicker">Browser extension · Applied AI · Active prototype</span>
+            <span class="project-kicker">Browser extension · Video translation · Language learning</span>
             <h1>Context Video Translator</h1>
-            <p class="project-hero-copy">Context-aware bilingual subtitles for video learning, built around native caption streams instead of screen scraping or isolated line-by-line translation.</p>
-            <div class="project-meta">
-              <div class="meta-item"><span>Role</span><strong>Product designer & developer</strong></div>
+            <p class="project-hero-copy">A browser extension that translates native YouTube and Udemy captions with surrounding dialogue, then renders synchronized bilingual subtitles for watching and language study.</p>
+            <div class="project-meta translator-meta">
+              <div class="meta-item"><span>Role</span><strong>Product designer &amp; developer</strong></div>
               <div class="meta-item"><span>Platforms</span><strong>Chrome / Edge · YouTube / Udemy</strong></div>
-              <div class="meta-item"><span>Current release</span><strong>MV3 · v0.4.15</strong></div>
+              <div class="meta-item"><span>Status</span><strong>Working extension</strong></div>
             </div>
             <div class="button-row">
               <a class="button primary" href="https://github.com/ptd150101/context-video-translator" target="_blank" rel="noreferrer">View source ↗</a>
-              <a class="button" href="#architecture">View architecture</a>
-              <a class="button ghost" href="#study-mode">Study mode</a>
+              <a class="button" href="#demos">See product demo <span class="arrow">↓</span></a>
+              <a class="button ghost" href="https://github.com/ptd150101/context-video-translator#build--load" target="_blank" rel="noreferrer">Setup guide ↗</a>
             </div>
           </div>
-          <div class="case-visual translator reveal" aria-label="Context Video Translator interface illustration">
-            <div class="browser-mock">
-              <div class="browser-top"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span><span class="address-bar"></span></div>
-              <div class="study-screen">
-                <div class="study-heading">YOUTUBE · JAPANESE CAPTION STREAM · CONTEXT WINDOW ±5 CUES</div>
-                <div class="study-subtitle">
-                  <div class="furigana-row" lang="ja"><span class="token noun"><small>きょう</small>今日</span><span class="token particle"><small>&nbsp;</small>は</span><span class="token noun"><small>にほんご</small>日本語</span><span class="token particle"><small>&nbsp;</small>を</span><span class="token verb"><small>べんきょう</small>勉強</span><span class="token verb"><small>&nbsp;</small>します</span></div>
-                  <div class="study-translation" lang="vi">Hôm nay tôi sẽ học tiếng Nhật.</div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <figure class="translator-hero-visual reveal">
+            <a href="../../assets/context-translator-hero.svg" target="_blank" rel="noreferrer noopener">
+              <img src="../../assets/context-translator-hero.svg" width="1600" height="900" fetchpriority="high" alt="Product reconstruction of Context Video Translator showing synchronized Japanese and Vietnamese subtitles on a video player.">
+            </a>
+            <figcaption><strong>Product overview.</strong> Native caption timing, contextual translation and a bilingual study overlay in one viewing flow.</figcaption>
+          </figure>
         </div>
       </div>
     </section>
 
-    <nav class="case-nav" aria-label="Case study sections">
-      <div class="container case-nav-inner"><a href="#overview">Overview</a><a href="#architecture">Architecture</a><a href="#youtube">YouTube capture</a><a href="#udemy">Udemy discovery</a><a href="#scheduler">Scheduler</a><a href="#study-mode">Study mode</a><a href="#reliability">Reliability</a><a href="#future">Future work</a></div>
+    <nav class="case-nav translator-nav" aria-label="Case study sections">
+      <div class="container case-nav-inner"><a href="#problem">Problem</a><a href="#solution">Solution</a><a href="#demos">Product demo</a><a href="#decisions">Key decisions</a><a href="#snapshot">Technical snapshot</a><a href="#outcome">Outcome</a></div>
     </nav>
 
-    <section class="case-section" id="overview">
-      <div class="container case-grid">
-        <aside class="case-aside"><span class="section-label">01 · Problem</span><h2>Translation latency is only one part of the problem.</h2></aside>
-        <div class="case-content reveal">
-          <p>Most subtitle translators look simple from the outside: read text, call a model, display the result. In practice, a useful video-learning tool must coordinate a moving caption timeline, inconsistent platform APIs, model latency, seeking, fullscreen remounts and language changes without flashing stale or half-complete content.</p>
-          <div class="callout">The core product is not “LLM translation.” It is a realtime orchestration layer that keeps platform timing, model output and the rendered overlay in one consistent state.</div>
-          <h3>Three product constraints</h3>
-          <ol>
-            <li><strong>Context matters.</strong> Spoken lines often depend on neighboring cues, so isolated translation produces ambiguous pronouns, inconsistent terminology and unnatural phrasing.</li>
-            <li><strong>Platforms expose captions differently.</strong> YouTube uses timedtext in JSON3/XML while Udemy can surface signed VTT URLs, lecture APIs, text tracks or observed resource requests.</li>
-            <li><strong>Pending state must not become visual noise.</strong> The source and translated line should update atomically rather than showing a source-only flash, placeholders or a stale language track.</li>
-          </ol>
-          <div class="metrics-grid">
-            <div class="metric"><strong>2</strong><span>supported video platforms</span></div>
-            <div class="metric"><strong>5+</strong><span>Udemy caption discovery paths</span></div>
-            <div class="metric"><strong>60s</strong><span>default ahead-of-time translation window</span></div>
+    <section class="translator-section" id="problem">
+      <div class="container story-layout">
+        <header class="story-heading reveal">
+          <span class="section-label">01 · The problem</span>
+          <h2>Translation loses meaning when every subtitle is treated as an isolated sentence.</h2>
+          <p>Native captions are useful, but copying each line into a translator interrupts playback and removes the surrounding conversation. Short spoken cues are especially ambiguous: pronouns, terminology and intent often depend on what was said before and what comes next.</p>
+        </header>
+        <div class="story-body reveal">
+          <div class="problem-cards">
+            <article><span>01</span><h3>Lost context</h3><p>Line-by-line translation can be grammatically valid while still choosing the wrong subject, pronoun or meaning.</p></article>
+            <article><span>02</span><h3>Broken viewing flow</h3><p>Pausing, copying and switching to another tool turns a continuous video into a repetitive manual workflow.</p></article>
+            <article><span>03</span><h3>Weak study experience</h3><p>Ordinary bilingual subtitles do not expose readings, word boundaries or which part of the line is currently spoken.</p></article>
           </div>
+          <figure class="story-visual">
+            <a href="../../assets/context-translator-problem.svg" target="_blank" rel="noreferrer noopener"><img src="../../assets/context-translator-problem.svg" width="1600" height="900" loading="lazy" decoding="async" alt="Comparison showing an isolated subtitle translation versus a translation informed by previous and upcoming dialogue."></a>
+            <figcaption><strong>Why context matters.</strong> The same cue can produce a more natural and consistent translation when neighboring dialogue is available. <a href="../../assets/context-translator-problem.svg" target="_blank" rel="noreferrer noopener">Open full size ↗</a></figcaption>
+          </figure>
         </div>
       </div>
     </section>
 
-    <section class="case-section" id="architecture">
-      <div class="container case-grid">
-        <aside class="case-aside"><span class="section-label">02 · Architecture</span><h2>Three execution contexts with explicit responsibilities.</h2></aside>
-        <div class="case-content reveal">
-          <p>The extension separates page-world interception from content orchestration and background model access. This is necessary because browser content scripts cannot directly observe every application object or network call made by the page.</p>
-          <div class="architecture" aria-label="Context Video Translator architecture">
-            <div class="arch-node"><strong>Platform adapter</strong><p>Runs in the page’s MAIN world and observes YouTube timedtext, Udemy fetch/XHR responses and caption API candidates.</p></div>
-            <div class="arch-node"><strong>Message bridge</strong><p>Uses scoped <code>window.postMessage</code> events to move validated caption payloads into the isolated extension context.</p></div>
-            <div class="arch-node"><strong>Cue normalizer</strong><p>Parses JSON3, XML and WebVTT into stable timed cues with normalized IDs, timing and source language.</p></div>
-            <div class="arch-node"><strong>Translation scheduler</strong><p>Selects the current and upcoming untranslated cues, adds surrounding context and handles urgent fills after seek.</p></div>
-            <div class="arch-node"><strong>Background worker</strong><p>Calls any OpenAI-compatible endpoint, validates numbered output, retries errors and reads/writes IndexedDB cache.</p></div>
-            <div class="arch-node"><strong>Overlay renderer</strong><p>Renders the bilingual subtitle atomically, adapts height, supports fullscreen remounting, layout editing and Japanese study analysis.</p></div>
-          </div>
-          <h3>Why this boundary matters</h3>
-          <p>Network interception remains platform-specific and disposable. Translation logic remains provider-agnostic. Rendering receives normalized cues rather than raw YouTube or Udemy payloads. That separation makes a future Netflix adapter possible without rewriting the model client or subtitle UI.</p>
+    <section class="translator-section surface-section" id="solution">
+      <div class="container story-layout">
+        <header class="story-heading reveal">
+          <span class="section-label">02 · The solution</span>
+          <h2>Translate ahead with context, then stay synchronized with the native video timeline.</h2>
+          <p>The extension captures caption data exposed by the platform, prepares upcoming cues with surrounding dialogue and sends them to an OpenAI-compatible translation endpoint. Results are cached and rendered in a bilingual overlay that follows the original playback timing.</p>
+        </header>
+        <div class="solution-steps reveal">
+          <article><span class="step-number">1</span><div><h3>Capture native captions</h3><p>Use YouTube timedtext or Udemy caption tracks instead of OCR, preserving the platform’s original timestamps and text.</p></div></article>
+          <article><span class="step-number">2</span><div><h3>Translate with surrounding dialogue</h3><p>Send the active batch with previous and upcoming cues as context to improve consistency and disambiguation.</p></div></article>
+          <article><span class="step-number">3</span><div><h3>Render synchronized bilingual subtitles</h3><p>Keep the native timeline as the source of truth while adding translation, karaoke progress and optional study annotations.</p></div></article>
+        </div>
+        <figure class="story-visual reveal">
+          <a href="../../assets/context-translator-flow.svg" target="_blank" rel="noreferrer noopener"><img src="../../assets/context-translator-flow.svg" width="1600" height="680" loading="lazy" decoding="async" alt="Context Video Translator flow from native caption track through context window, translation API and cache to synchronized bilingual overlay."></a>
+          <figcaption><strong>Solution flow.</strong> The extension extends the existing player rather than replacing its video or timing system. <a href="../../assets/context-translator-flow.svg" target="_blank" rel="noreferrer noopener">Open full size ↗</a></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="translator-section" id="demos">
+      <div class="container">
+        <header class="demo-heading reveal">
+          <span class="section-label">03 · Product demo</span>
+          <h2>One extension, several viewing and study workflows.</h2>
+          <p>These vector product reconstructions are based on the implemented overlay, platform support and settings in the repository. They remain sharp at full size and avoid presenting stock imagery as a real captured session.</p>
+        </header>
+        <div class="demo-gallery">
+          <figure class="demo-card demo-featured reveal"><a href="../../assets/context-demo-youtube.svg" target="_blank" rel="noreferrer noopener"><img src="../../assets/context-demo-youtube.svg" width="1600" height="900" loading="lazy" decoding="async" alt="YouTube product reconstruction with synchronized Japanese source subtitles and Vietnamese translation."></a><figcaption><strong>YouTube bilingual subtitles.</strong> Native captions are translated ahead and displayed as one synchronized overlay. <a href="../../assets/context-demo-youtube.svg" target="_blank" rel="noreferrer noopener">Open full size ↗</a></figcaption></figure>
+          <figure class="demo-card reveal"><a href="../../assets/context-demo-udemy.svg" target="_blank" rel="noreferrer noopener"><img src="../../assets/context-demo-udemy.svg" width="1600" height="900" loading="lazy" decoding="async" alt="Udemy lecture product reconstruction with English source captions and Vietnamese translation."></a><figcaption><strong>Udemy lecture support.</strong> Available VTT and lecture caption sources are normalized into the same viewing experience. <a href="../../assets/context-demo-udemy.svg" target="_blank" rel="noreferrer noopener">Open full size ↗</a></figcaption></figure>
+          <figure class="demo-card reveal"><a href="../../assets/context-demo-study-mode.svg" target="_blank" rel="noreferrer noopener"><img src="../../assets/context-demo-study-mode.svg" width="1600" height="900" loading="lazy" decoding="async" alt="Japanese study mode product reconstruction with furigana, token colors, karaoke progress and Vietnamese translation."></a><figcaption><strong>Japanese study mode.</strong> Furigana, token categories and a karaoke sweep add study context without changing the player. <a href="../../assets/context-demo-study-mode.svg" target="_blank" rel="noreferrer noopener">Open full size ↗</a></figcaption></figure>
+          <figure class="demo-card reveal"><a href="../../assets/context-demo-settings.svg" target="_blank" rel="noreferrer noopener"><img src="../../assets/context-demo-settings.svg" width="1600" height="900" loading="lazy" decoding="async" alt="Extension settings product reconstruction with provider, language, lookahead, cache and study mode controls."></a><figcaption><strong>Configurable provider and behavior.</strong> Users can connect an OpenAI-compatible endpoint and tune translation, cache and study features. <a href="../../assets/context-demo-settings.svg" target="_blank" rel="noreferrer noopener">Open full size ↗</a></figcaption></figure>
+          <figure class="demo-card reveal"><a href="../../assets/context-demo-layout.svg" target="_blank" rel="noreferrer noopener"><img src="../../assets/context-demo-layout.svg" width="1600" height="900" loading="lazy" decoding="async" alt="Subtitle layout editor product reconstruction showing a draggable and resizable subtitle region over video."></a><figcaption><strong>Layout customization.</strong> The subtitle region can be moved and resized to avoid covering important video content. <a href="../../assets/context-demo-layout.svg" target="_blank" rel="noreferrer noopener">Open full size ↗</a></figcaption></figure>
         </div>
       </div>
     </section>
 
-    <section class="case-section" id="youtube">
-      <div class="container case-grid">
-        <aside class="case-aside"><span class="section-label">03 · YouTube</span><h2>Race-safe capture instead of DOM scraping.</h2></aside>
-        <div class="case-content reveal">
-          <p>The YouTube adapter patches both <code>fetch</code> and <code>XMLHttpRequest</code> for timedtext requests. It reads the selected caption track from the player, attaches a selection epoch to captured responses and delays delivery briefly while the player state settles.</p>
-          <h3>The stale-response race</h3>
-          <p>When a viewer switches from one caption language to another, an old network request can finish after the selection has already changed. Rendering that response creates a mixed-language or “jumping back” subtitle experience.</p>
-          <div class="pipeline-visual">
-            <span class="eyebrow">Track selection timeline</span>
-            <div class="timeline-bar">
-              <div class="timeline-track"><span class="timeline-translated"></span><span class="timeline-ahead"></span></div>
-              <span class="playback-marker"></span>
-            </div>
-            <div class="timeline-labels"><span>Old track response starts</span><span>Selection changes</span><span>Response revalidated</span><span>Only matching track delivered</span></div>
-          </div>
-          <h3>JSON3 replacement events</h3>
-          <p>Translated JSON3 can contain an original event followed by a replacement event for the same caption window. Concatenating every event displays both languages. The adapter compares event IDs, window IDs, time deltas and overlap ratios, then removes only the stale event while preserving the final state YouTube would render.</p>
-          <div class="decision-grid">
-            <article class="decision-card"><span>Rejected</span><h4>Reading visible caption DOM</h4><p>DOM text is late, presentation-specific and vulnerable to rolling-caption replacement behavior.</p></article>
-            <article class="decision-card"><span>Chosen</span><h4>Capture native timedtext</h4><p>Native payloads preserve cue timing and provide a stable source before YouTube’s visual renderer mutates the DOM.</p></article>
-          </div>
+    <section class="translator-section surface-section" id="decisions">
+      <div class="container">
+        <header class="demo-heading reveal"><span class="section-label">04 · Key product decisions</span><h2>Engineering choices that remain visible in the experience.</h2></header>
+        <div class="decision-list">
+          <article class="reveal"><span>01</span><h3>Preserve native timing</h3><p>The extension does not recreate alignment. The platform’s caption timeline remains the source of truth for when each line appears.</p></article>
+          <article class="reveal"><span>02</span><h3>Translate ahead, not after</h3><p>Upcoming cues are prepared before playback reaches them, reducing visible waiting while still batching provider requests.</p></article>
+          <article class="reveal"><span>03</span><h3>Use context as product data</h3><p>Previous and upcoming dialogue are included to improve consistency, pronoun choice and terminology across adjacent lines.</p></article>
+          <article class="reveal"><span>04</span><h3>Reject stale track state</h3><p>Old translations are prevented from appearing after a language switch, seek or player remount.</p></article>
         </div>
       </div>
     </section>
 
-    <section class="case-section" id="udemy">
-      <div class="container case-grid">
-        <aside class="case-aside"><span class="section-label">04 · Udemy</span><h2>A multi-source caption discovery pipeline.</h2></aside>
-        <div class="case-content reveal">
-          <p>Udemy courses do not expose captions through one reliable public surface. The adapter therefore treats discovery as a scored fallback pipeline rather than a single selector.</p>
-          <div class="architecture" aria-label="Udemy caption discovery paths">
-            <div class="arch-node"><strong>Observed VTT</strong><p>Capture signed WebVTT responses seen in fetch or XHR requests.</p></div>
-            <div class="arch-node"><strong>Lecture API</strong><p>Request the active lecture asset and extract caption objects with refreshed signed URLs.</p></div>
-            <div class="arch-node"><strong>JSON walk</strong><p>Bounded traversal of likely caption-bearing API responses while rejecting bare filenames that are not fetchable URLs.</p></div>
-            <div class="arch-node"><strong>Native tracks</strong><p>Fallback to video <code>textTrack</code> cues and HTML <code>&lt;track&gt;</code> elements when available.</p></div>
-            <div class="arch-node"><strong>Performance entries</strong><p>Inspect loaded resource URLs for VTT assets that may have completed before the extension attached its interceptor.</p></div>
+    <section class="translator-section" id="snapshot">
+      <div class="container snapshot-grid">
+        <header class="story-heading reveal"><span class="section-label">05 · Technical snapshot</span><h2>Enough implementation detail to establish credibility—without turning the portfolio into documentation.</h2><p>The repository remains the source for interception, parsing, caching, retry and platform-adapter internals.</p></header>
+        <div class="snapshot-panel reveal">
+          <dl>
+            <div><dt>Extension</dt><dd>Chrome Manifest V3 · JavaScript</dd></div>
+            <div><dt>Platforms</dt><dd>YouTube · Udemy</dd></div>
+            <div><dt>Translation</dt><dd>OpenAI-compatible Chat Completions API</dd></div>
+            <div><dt>Storage</dt><dd>IndexedDB translation cache</dd></div>
+            <div><dt>Japanese analysis</dt><dd>Kuromoji with lightweight fallback</dd></div>
+            <div><dt>Caption sources</dt><dd>YouTube timedtext / JSON3 · Udemy VTT / lecture APIs</dd></div>
+          </dl>
+          <div class="snapshot-highlights">
+            <span>Context window</span><span>Lookahead scheduling</span><span>Track-safe state</span><span>Local cache</span>
           </div>
-          <h3>Fetch context fallback</h3>
-          <p>Some signed CDN VTT URLs reject credentialed CORS, while lecture APIs require the authenticated page context. The content orchestrator selects credentials by destination and can fall back across page-world fetch, content-script fetch and background fetch.</p>
-          <div class="callout">The adapter validates that a response actually looks like WebVTT before parsing it. If the body is JSON, it searches for a better caption candidate instead of treating an API response as a subtitle file.</div>
+          <a class="button" href="https://github.com/ptd150101/context-video-translator" target="_blank" rel="noreferrer">Read technical documentation ↗</a>
         </div>
       </div>
     </section>
 
-    <section class="case-section" id="scheduler">
-      <div class="container case-grid">
-        <aside class="case-aside"><span class="section-label">05 · Realtime scheduler</span><h2>Translate ahead, prioritize now, preserve context.</h2></aside>
-        <div class="case-content reveal">
-          <p>The scheduler fills a moving window ahead of playback. It chooses untranslated cues from the current position through the configured horizon, puts the active cue first and batches only the number the provider can handle safely.</p>
-          <div class="pipeline-visual">
-            <span class="eyebrow">Default translation window</span>
-            <div class="timeline-bar">
-              <div class="timeline-track"><span class="timeline-translated"></span><span class="timeline-ahead"></span></div>
-              <span class="playback-marker"></span>
-            </div>
-            <div class="timeline-labels"><span>Cached / translated</span><span>Current cue: highest priority</span><span>Upcoming batch</span><span>+60 seconds</span></div>
-          </div>
-          <h3>Context construction</h3>
-          <p>Each request contains the numbered lines to translate plus up to five previous and five future cues marked as context-only. The background worker requires the model to return exactly the same number of numbered lines and rejects missing output.</p>
-          <div class="code-window">
-            <div class="code-head"><span>translation-request.txt</span><button class="copy-button" data-copy="#translation-prompt">Copy</button></div>
-            <pre id="translation-prompt">Previous context, do not translate:
-- さっき駅に着きました。
-- 友達を待っています。
-
-Future context, do not translate:
-- 一緒に昼ご飯を食べます。
-
-Translate these numbered lines into Vietnamese:
-[1] もうすぐ来ると思います。
-[2] 今日は少し寒いですね。</pre>
-          </div>
-          <h3>Atomic rendering</h3>
-          <p>The overlay reserves stable layout space while a translation is pending but does not expose a visible placeholder. The source and translated state update together, preventing the subtitle from looking complete while still showing untranslated text.</p>
-          <h3>Local cache</h3>
-          <p>IndexedDB keys include provider URL, model, source language, target language and normalized source text. Entries have a configurable TTL and a maximum count, so replaying or seeking through a previously watched video avoids unnecessary model calls without mixing results across configurations.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="case-section" id="study-mode">
-      <div class="container case-grid">
-        <aside class="case-aside"><span class="section-label">06 · Japanese study mode</span><h2>Local language analysis layered onto the caption timeline.</h2></aside>
-        <div class="case-content reveal">
-          <p>Study mode uses Kuromoji when available and falls back to a lightweight rule engine while the dictionary loads or when users prefer a smaller setup. Token analysis is cached and mapped into reader-friendly categories such as noun, verb, particle, auxiliary and adjective.</p>
-          <div class="gallery">
-            <article class="gallery-card wide">
-              <h4>Furigana, grammar color and karaoke sweep</h4>
-              <div class="study-screen">
-                <div class="study-heading">LOCAL ANALYSIS · KUROMOJI WITH LIGHTWEIGHT FALLBACK</div>
-                <div class="study-subtitle">
-                  <div class="furigana-row" lang="ja"><span class="token noun"><small>わたし</small>私</span><span class="token particle"><small>&nbsp;</small>は</span><span class="token noun"><small>えいが</small>映画</span><span class="token particle"><small>&nbsp;</small>を</span><span class="token verb"><small>み</small>見</span><span class="token verb"><small>&nbsp;</small>ました</span></div>
-                  <div class="study-translation" lang="vi">Tôi đã xem một bộ phim.</div>
-                </div>
-              </div>
-            </article>
-            <article class="gallery-card"><h4>Provider settings</h4><div class="mini-ui"><div class="mini-ui-header"></div><div class="mini-ui-content"><div class="form-line"></div><div class="form-line"></div><div class="form-line short"></div><div class="form-line"></div></div></div></article>
-            <article class="gallery-card"><h4>Layout editor</h4><div class="mini-ui"><div class="mini-ui-header"></div><div class="mini-ui-content"><div style="height:150px;border:1px dashed rgba(98,217,255,.55);border-radius:10px;display:grid;place-items:center;color:var(--muted);font:600 11px var(--font-mono)">DRAG / RESIZE SUBTITLE REGION</div></div></div></article>
-          </div>
-          <h3>UX choices</h3>
-          <ul>
-            <li>Furigana can appear for all Kanji tokens, only the currently spoken chunk or on hover.</li>
-            <li>Karaoke progress fills the whole original line instead of flashing many tiny grammar blocks.</li>
-            <li>Dynamic height measures the rendered subtitle so ruby text and two-line translations are not clipped.</li>
-            <li>The subtitle output itself has a configurable background and can be dragged directly in normal mode.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <section class="case-section" id="reliability">
-      <div class="container case-grid">
-        <aside class="case-aside"><span class="section-label">07 · Reliability</span><h2>Failure handling designed into the visible experience.</h2></aside>
-        <div class="case-content reveal">
-          <table class="reliability-table">
-            <thead><tr><th>Failure mode</th><th>Handling</th></tr></thead>
-            <tbody>
-              <tr><td>Old caption response finishes late</td><td>Revalidate selected track and selection epoch before delivery.</td></tr>
-              <tr><td>JSON3 contains stale replacement event</td><td>Detect matching timing/window pairs and keep the final event.</td></tr>
-              <tr><td>Model returns wrong numbering</td><td>Strict parser, bounded best-effort only after actual model output, never silent network fallback.</td></tr>
-              <tr><td>User seeks into an untranslated cue</td><td>Urgent current-cue scheduling before continuing the ahead window.</td></tr>
-              <tr><td>Udemy signed VTT fetch fails</td><td>Fallback across page, content and background execution contexts.</td></tr>
-              <tr><td>Fullscreen or SPA navigation remounts video</td><td>Observe route/video changes and recreate the overlay against the active player.</td></tr>
-            </tbody>
-          </table>
-          <h3>Known limitations</h3>
-          <ul>
-            <li>The platform must expose captions or a transcript; the extension is not a speech-recognition engine.</li>
-            <li>Translation quality and latency depend on the configured model or provider.</li>
-            <li>Platform DOM and API changes can require adapter updates.</li>
-            <li>Netflix is a planned adapter, not a current supported platform.</li>
-            <li>The current prototype has deeper implementation coverage than automated test coverage.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <section class="case-section" id="future">
-      <div class="container case-grid">
-        <aside class="case-aside"><span class="section-label">08 · Next iterations</span><h2>From a capable prototype to a maintainable product.</h2></aside>
-        <div class="case-content reveal">
-          <div class="accordion">
-            <details open><summary>Refactor platform adapters behind a common interface</summary><p>Extract YouTube and Udemy capture, discovery and normalization into explicit modules so the orchestration layer depends only on normalized cue events.</p></details>
-            <details><summary>Add parser and scheduler fixtures</summary><p>Build deterministic tests for JSON3 replacement handling, XML/WebVTT parsing, numbered model output, cache keys, seek priority and caption-track switching.</p></details>
-            <details><summary>Package for Chrome Web Store</summary><p>Finalize privacy documentation, remove overly broad permissions where possible, add release automation and produce a stable onboarding flow.</p></details>
-            <details><summary>Expand learning workflows</summary><p>Export bilingual transcripts, track per-course vocabulary and optionally summarize long-range context rather than sending only neighboring cues.</p></details>
-            <details><summary>Add a Netflix adapter</summary><p>Implement as a separate platform adapter without coupling its capture mechanism to YouTube or Udemy assumptions.</p></details>
-          </div>
-          <div class="callout">The most valuable next step is not another visible feature. It is converting proven runtime behavior into modular adapters and repeatable fixtures.</div>
-          <div class="button-row"><a class="button primary" href="https://github.com/ptd150101/context-video-translator" target="_blank" rel="noreferrer">Explore the repository ↗</a><a class="button" href="../remotekey/">Next case study <span class="arrow">→</span></a></div>
-        </div>
+    <section class="translator-outcome" id="outcome">
+      <div class="container outcome-panel reveal">
+        <span class="section-label">06 · Outcome</span>
+        <h2>A smoother way to watch, understand and study foreign-language video.</h2>
+        <p>Context Video Translator turns native caption tracks into a continuous bilingual viewing experience. Instead of replacing the video platform, it extends the existing player with contextual translation, reliable synchronization and optional language-learning tools.</p>
+        <div class="button-row"><a class="button primary" href="https://github.com/ptd150101/context-video-translator" target="_blank" rel="noreferrer">View source on GitHub ↗</a><a class="button" href="https://github.com/ptd150101/context-video-translator#build--load" target="_blank" rel="noreferrer">Read setup documentation ↗</a><a class="button ghost" href="../../#work">Back to selected work ↑</a></div>
       </div>
     </section>
   </main>
