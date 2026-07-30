@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#9b8cff"/><stop offset=".52" stop-color="#62d9ff"/><stop offset="1" stop-color="#66e4a7"/></linearGradient></defs>
+  <rect width="64" height="64" rx="18" fill="#0d1119"/>
+  <rect x="1" y="1" width="62" height="62" rx="17" fill="none" stroke="url(#g)" stroke-opacity=".65"/>
+  <text x="32" y="39" text-anchor="middle" font-family="ui-monospace,monospace" font-size="22" font-weight="800" fill="url(#g)">DT</text>
+</svg>
