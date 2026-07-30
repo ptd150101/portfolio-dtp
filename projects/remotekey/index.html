@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <script>document.documentElement.classList.add('js')</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RemoteKey — Case Study by Đạt Tiến</title>
+  <meta name="description" content="Engineering case study for a shortcut-only Android-to-Windows keyboard bridge using Kotlin AccessibilityService, TCP JSON Lines, Python and Win32 SendInput.">
+  <meta name="theme-color" content="#080a0f">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="RemoteKey — Android to Windows Shortcut Bridge">
+  <meta property="og:description" content="A cross-platform input system that relays only Android-consumed desktop shortcuts while preserving the remote app's native keyboard path.">
+  <meta property="og:image" content="https://ptd150101.github.io/portfolio-dtp/assets/og-remotekey.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/script.js" defer></script>
+  <link rel="canonical" href="https://ptd150101.github.io/portfolio-dtp/projects/remotekey/">
+  <link rel="manifest" href="../../site.webmanifest">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareSourceCode","name":"RemoteKey","codeRepository":"https://github.com/ptd150101/android-remote-keyboard","programmingLanguage":["Kotlin","Python"],"author":{"@type":"Person","name":"Phan Tiến Đạt"},"description":"Shortcut-only Android-to-Windows keyboard bridge."}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" data-header>
+    <div class="container nav-wrap">
+      <a class="brand" href="../../"><span class="brand-mark">DT</span><span>Đạt Tiến</span></a>
+      <nav class="nav-links" data-nav-links aria-label="Primary navigation">
+        <a href="../../#work">Work</a><a href="../../#principles">Principles</a><a href="../../#about">About</a><a href="../../resume/">Résumé</a><a href="https://github.com/ptd150101/android-remote-keyboard" target="_blank" rel="noreferrer">Repository ↗</a>
+      </nav>
+      <div class="button-row"><button class="icon-button" type="button" data-theme-toggle aria-label="Switch theme">◑</button><button class="icon-button mobile-toggle" type="button" data-menu-toggle aria-expanded="false">Menu</button></div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="project-hero">
+      <div class="container">
+        <div class="breadcrumbs"><a href="../../">Home</a><span>/</span><a href="../../#work">Projects</a><span>/</span><span>RemoteKey</span></div>
+        <div class="project-hero-grid">
+          <div class="reveal">
+            <span class="project-kicker">Android + Windows · Input systems · Working prototype</span>
+            <h1>RemoteKey</h1>
+            <p class="project-hero-copy">A shortcut-only keyboard bridge that restores Windows desktop combinations consumed by Android without replacing the remote application’s low-latency typing path.</p>
+            <div class="project-meta">
+              <div class="meta-item"><span>Role</span><strong>System designer & developer</strong></div>
+              <div class="meta-item"><span>Platforms</span><strong>Android 8+ · Windows 10/11</strong></div>
+              <div class="meta-item"><span>Protocol</span><strong>TCP · JSON Lines · v1</strong></div>
+            </div>
+            <div class="button-row">
+              <a class="button primary" href="https://github.com/ptd150101/android-remote-keyboard" target="_blank" rel="noreferrer">View source ↗</a>
+              <a class="button" href="#architecture">View architecture</a>
+              <a class="button ghost" href="#protocol">Protocol</a>
+            </div>
+          </div>
+          <div class="case-visual remote reveal" aria-label="RemoteKey Android to Windows system illustration">
+            <div class="remote-scene">
+              <div class="remote-device"><span class="eyebrow">Android tablet</span><div class="remote-screen"><span class="remote-line"></span><span class="remote-line w70"></span><span class="remote-line w45"></span></div><div class="keyboard-keys"><span class="key hot">ALT</span><span class="key hot">TAB</span><span class="key">WIN</span><span class="key">E</span></div></div>
+              <div class="remote-bridge"><span>TOKEN</span><div class="packet-line"><span class="packet"></span></div><span>TCP</span></div>
+              <div class="remote-device pc"><span class="eyebrow">Windows agent</span><div class="remote-screen"><span class="remote-line w45"></span><span class="remote-line"></span><span class="remote-line w70"></span></div><div class="keyboard-keys"><span class="key hot">ALT</span><span class="key hot">TAB</span><span class="key">VK</span><span class="key">API</span></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <nav class="case-nav" aria-label="Case study sections"><div class="container case-nav-inner"><a href="#overview">Overview</a><a href="#architecture">Architecture</a><a href="#shortcut-only">Shortcut-only</a><a href="#state">Modifier state</a><a href="#protocol">Protocol</a><a href="#windows">Windows agent</a><a href="#testing">Testing</a><a href="#security">Security</a><a href="#future">Future work</a></div></nav>
+
+    <section class="case-section" id="overview">
+      <div class="container case-grid">
+        <aside class="case-aside"><span class="section-label">01 · Problem</span><h2>A remote desktop session that cannot use desktop shortcuts feels incomplete.</h2></aside>
+        <div class="case-content reveal">
+          <p>Physical Bluetooth and USB keyboards usually type correctly through Android remote desktop apps. The failure appears around operating-system shortcuts: Android or vendor firmware can intercept <code>Alt + Tab</code>, <code>Windows + E</code> and <code>Windows + Tab</code> before the remote app can forward them to the Windows PC.</p>
+          <div class="callout green">RemoteKey does not stream the screen, replace Parsec or relay every keystroke. It supplies only the missing shortcut path.</div>
+          <div class="decision-grid">
+            <article class="decision-card"><span>Native path</span><h4>Normal typing</h4><p>Physical keyboard → remote desktop app → Windows. No extra connection, no duplicate input and no added hop.</p></article>
+            <article class="decision-card"><span>Recovery path</span><h4>Selected shortcuts</h4><p>Physical keyboard → Android AccessibilityService → TCP agent → Win32 SendInput.</p></article>
+          </div>
+          <div class="metrics-grid">
+            <div class="metric"><strong>3</strong><span>currently supported desktop shortcuts</span></div>
+            <div class="metric"><strong>2</strong><span>native runtimes: Kotlin + Python</span></div>
+            <div class="metric"><strong>1</strong><span>active client allowed per agent</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-section" id="architecture">
+      <div class="container case-grid">
+        <aside class="case-aside"><span class="section-label">02 · Architecture</span><h2>A two-ended system with a deliberately small protocol.</h2></aside>
+        <div class="case-content reveal">
+          <div class="architecture" aria-label="RemoteKey architecture">
+            <div class="arch-node"><strong>Physical keyboard</strong><p>Produces Android key events while a remote desktop or remote gaming client has focus.</p></div>
+            <div class="arch-node"><strong>AccessibilityService</strong><p>Requests physical key filtering, tracks modifiers and intercepts only explicitly supported system combinations.</p></div>
+            <div class="arch-node"><strong>Relay worker</strong><p>Serializes key events as JSON Lines, performs token handshake, maintains a bounded queue and reconnects in the background.</p></div>
+            <div class="arch-node"><strong>Windows TCP agent</strong><p>Authenticates one client, validates packet type and protocol version, and guarantees key release on disconnect.</p></div>
+            <div class="arch-node"><strong>Key mapper</strong><p>Maps Android key codes to Windows virtual keys and marks extended keys correctly.</p></div>
+            <div class="arch-node"><strong>Win32 injector</strong><p>Calls <code>MapVirtualKeyW</code> and <code>SendInput</code> using correctly sized native structures.</p></div>
+          </div>
+          <p>The architecture can run on the same LAN or through a trusted private VPN such as Tailscale. Video, audio, mouse and normal keyboard input remain the responsibility of the existing remote application.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-section" id="shortcut-only">
+      <div class="container case-grid">
+        <aside class="case-aside"><span class="section-label">03 · Core decision</span><h2>Relay only what the native route cannot deliver.</h2></aside>
+        <div class="case-content reveal">
+          <p>Forwarding every key through a second TCP connection would create a new keyboard system beside the one already built into the remote app. That would introduce avoidable latency, duplicate keystrokes, ordering problems and conflicts around text editing or international input.</p>
+          <h3>Event handling policy</h3>
+          <table class="reliability-table">
+            <thead><tr><th>Input</th><th>RemoteKey action</th><th>Result</th></tr></thead>
+            <tbody>
+              <tr><td>Letter, number or ordinary key</td><td>Return immediately without relay</td><td>Remote app keeps its native fast path.</td></tr>
+              <tr><td>Alt or Windows modifier down</td><td>Hold locally until a supported combo is known</td><td>A modifier is not sent unnecessarily.</td></tr>
+              <tr><td>Supported combo key</td><td>Relay modifier down, then combo key</td><td>Windows receives the correct ordering.</td></tr>
+              <tr><td>Unsupported chord after held modifier</td><td>Consume the chord</td><td>The remote app does not receive an unmodified key after Android consumed its modifier.</td></tr>
+            </tbody>
+          </table>
+          <div class="callout green">The system complements the remote application instead of competing with it. That makes the simplest path the fastest path.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-section" id="state">
+      <div class="container case-grid">
+        <aside class="case-aside"><span class="section-label">04 · State machine</span><h2>Key-down and key-up ordering must survive interruptions.</h2></aside>
+        <div class="case-content reveal">
+          <p>The Android service keeps separate state for modifiers currently held by the user, modifiers already relayed to Windows and combo keys that are active. This prevents repeated modifier-down events and ensures each key-up is paired with the path that originally handled its key-down.</p>
+          <div class="state-machine" aria-label="Alt Tab state machine">
+            <div class="state">Idle</div><div class="state">Alt held locally</div><div class="state">Alt relayed<br>Tab down</div><div class="state">Tab up<br>Alt up → Idle</div>
+          </div>
+          <div class="release-path">Service interrupt · capture disabled · settings changed · socket disconnect · emergency chord → RELEASE_ALL</div>
+          <h3>Emergency stop</h3>
+          <p><code>Ctrl + Alt + Shift + F12</code> disables capture, clears Android shortcut state and requests a remote key release. It is designed as a recovery mechanism when a vendor, device or network behaves unexpectedly.</p>
+          <h3>Queue overflow recovery</h3>
+          <p>The relay uses a bounded 2,048-message queue. If it fills, the client clears queued state, marks the connection for resynchronization, inserts <code>release_all</code> and then keeps the newest event. Losing old transient input is safer than preserving an inconsistent modifier state.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-section" id="protocol">
+      <div class="container case-grid">
+        <aside class="case-aside"><span class="section-label">05 · Protocol</span><h2>Readable on the wire, strict at the boundary.</h2></aside>
+        <div class="case-content reveal">
+          <p>RemoteKey uses newline-delimited JSON over TCP. The format is intentionally easy to inspect with a test client, while the server still validates authentication, protocol version, packet size, event action and key code.</p>
+          <div class="code-window">
+            <div class="code-head"><span>session.jsonl</span><button class="copy-button" data-copy="#protocol-sample">Copy</button></div>
+            <pre id="protocol-sample"><span class="code-key">{"type"</span>:<span class="code-string">"hello"</span>, <span class="code-key">"token"</span>:<span class="code-string">"…"</span>, <span class="code-key">"device"</span>:<span class="code-string">"Redmi Pad Pro"</span>, <span class="code-key">"protocol"</span>:<span class="code-number">1</span>}
+<span class="code-key">{"type"</span>:<span class="code-string">"key"</span>, <span class="code-key">"action"</span>:<span class="code-string">"down"</span>, <span class="code-key">"keyCode"</span>:<span class="code-number">57</span>}
+<span class="code-key">{"type"</span>:<span class="code-string">"key"</span>, <span class="code-key">"action"</span>:<span class="code-string">"down"</span>, <span class="code-key">"keyCode"</span>:<span class="code-number">61</span>}
+<span class="code-key">{"type"</span>:<span class="code-string">"key"</span>, <span class="code-key">"action"</span>:<span class="code-string">"up"</span>, <span class="code-key">"keyCode"</span>:<span class="code-number">61</span>}
+<span class="code-key">{"type"</span>:<span class="code-string">"key"</span>, <span class="code-key">"action"</span>:<span class="code-string">"up"</span>, <span class="code-key">"keyCode"</span>:<span class="code-number">57</span>}
+<span class="code-key">{"type"</span>:<span class="code-string">"release_all"</span>}</pre>
+          </div>
+          <div class="decision-grid">
+            <article class="decision-card"><span>Handshake</span><h4>Token + protocol version</h4><p>Rejects accidental clients and prevents incompatible client/server versions from silently exchanging events.</p></article>
+            <article class="decision-card"><span>Connection policy</span><h4>One active client</h4><p>A non-blocking lock prevents two Android devices from injecting overlapping modifier state.</p></article>
+            <article class="decision-card"><span>Idle behavior</span><h4>Ping packets</h4><p>Detects dead connections and keeps the socket active without generating keyboard input.</p></article>
+            <article class="decision-card"><span>Safety</span><h4>Release on every boundary</h4><p>The agent releases tracked keys after handshake, on explicit request and in the disconnect <code>finally</code> path.</p></article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-section" id="windows">
+      <div class="container case-grid">
+        <aside class="case-aside"><span class="section-label">06 · Windows agent</span><h2>Python at the boundary of native Win32 input.</h2></aside>
+        <div class="case-content reveal">
+          <p>The agent uses only the Python standard library at runtime. It maps Android key codes to Windows virtual keys, records pressed keys under a lock and emits native keyboard input through <code>ctypes</code>.</p>
+          <h3>Native details that matter</h3>
+          <ul>
+            <li>Extended keys such as Windows, right Alt, arrows and Numpad Enter receive <code>KEYEVENTF_EXTENDEDKEY</code>.</li>
+            <li><code>MapVirtualKeyW</code> derives the scan code associated with each virtual key.</li>
+            <li>The <code>INPUT</code> and <code>KEYBDINPUT</code> structures use pointer-sized <code>dwExtraInfo</code>, avoiding incorrect 64-bit structure sizing.</li>
+            <li>The injector tracks pressed Android key codes and releases them in reverse order.</li>
+            <li><code>--dry-run</code> exercises the server and protocol without injecting real Windows input.</li>
+          </ul>
+          <h3>Distribution</h3>
+          <p>A one-command build produces a debug Android APK and a standalone Windows executable with launchers, configuration, firewall setup and logging. The target PC does not need Python installed when using the packaged agent.</p>
+          <div class="code-window"><div class="code-head"><span>dist/</span></div><pre>RemoteKey-debug.apk
+windows-agent/
+├── RemoteKeyAgent.exe
+├── agent_config.json
+├── start-agent.bat
+├── start-agent-admin.bat
+└── add-firewall-rule.ps1</pre></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-section" id="testing">
+      <div class="container case-grid">
+        <aside class="case-aside"><span class="section-label">07 · Testing</span><h2>Protocol behavior can be verified without a tablet or real key injection.</h2></aside>
+        <div class="case-content reveal">
+          <p>The test suite imports the agent, replaces the native injector with a recording implementation, starts the TCP server on a temporary local port and sends a real authenticated session through a socket.</p>
+          <div class="architecture" aria-label="Protocol integration test sequence">
+            <div class="arch-node"><strong>Test client</strong><p>Connects to a temporary server address and sends a protocol v1 hello packet with a known token.</p></div>
+            <div class="arch-node"><strong>Agent server</strong><p>Authenticates the client and returns a successful hello response.</p></div>
+            <div class="arch-node"><strong>Alt + Tab sequence</strong><p>Sends Alt down, Tab down, Tab up and Alt up as four individual packets.</p></div>
+            <div class="arch-node"><strong>Recording injector</strong><p>Asserts that the final event list exactly matches the expected order.</p></div>
+          </div>
+          <h3>Additional test coverage</h3>
+          <p>Unit tests verify common Android-to-Windows mappings, letter and number ranges, function keys and the extended-key status of Numpad Enter.</p>
+          <div class="callout green">The design keeps protocol testing independent from Win32. Native injection is the final adapter, not a requirement for exercising server state.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-section" id="security">
+      <div class="container case-grid">
+        <aside class="case-aside"><span class="section-label">08 · Security & limits</span><h2>Useful within a trusted network, deliberately not presented as an Internet relay.</h2></aside>
+        <div class="case-content reveal">
+          <table class="reliability-table">
+            <thead><tr><th>Boundary</th><th>Current behavior</th></tr></thead>
+            <tbody>
+              <tr><td>Transport</td><td>Unencrypted TCP. Use only on a trusted LAN or private VPN.</td></tr>
+              <tr><td>Authentication</td><td>Shared token compared with <code>hmac.compare_digest</code>.</td></tr>
+              <tr><td>Client count</td><td>One active client; additional clients are rejected.</td></tr>
+              <tr><td>Packet size</td><td>Maximum line size is 64 KB.</td></tr>
+              <tr><td>Windows security</td><td>Cannot generate Ctrl+Alt+Delete or bypass the secure UAC desktop.</td></tr>
+              <tr><td>Android firmware</td><td>Some vendors consume Meta/Windows before AccessibilityService receives it.</td></tr>
+            </tbody>
+          </table>
+          <h3>Honest product boundary</h3>
+          <p>Administrator mode can help control ordinary elevated applications, but it does not bypass Windows secure desktop. Likewise, no software-only AccessibilityService can recover a key event that device firmware never delivers to Android applications.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-section" id="future">
+      <div class="container case-grid">
+        <aside class="case-aside"><span class="section-label">09 · Next iterations</span><h2>Reduce setup friction and strengthen the pairing boundary.</h2></aside>
+        <div class="case-content reveal">
+          <div class="accordion">
+            <details open><summary>Random pairing token and QR configuration</summary><p>Generate a new token on first agent launch and let the Android app scan IP, port and token instead of typing them manually.</p></details>
+            <details><summary>Optional encrypted transport</summary><p>Add TLS or a short-lived pairing challenge for users who cannot rely on an already encrypted private VPN.</p></details>
+            <details><summary>LAN discovery and Windows tray UI</summary><p>Advertise the agent on the private network, show status in a tray application and make firewall or administrator state visible.</p></details>
+            <details><summary>Shortcut profiles</summary><p>Allow users to opt into additional combinations while preserving the shortcut-only principle and conflict validation.</p></details>
+            <details><summary>Compatibility matrix and instrumentation</summary><p>Measure LAN latency, reconnect time and device/firmware support across tablets and remote applications.</p></details>
+          </div>
+          <div class="callout green">The system is intentionally narrow. Future features should improve pairing, compatibility and observability without turning it into a second full keyboard stack.</div>
+          <div class="button-row"><a class="button primary" href="https://github.com/ptd150101/android-remote-keyboard" target="_blank" rel="noreferrer">Explore the repository ↗</a><a class="button" href="../context-video-translator/">Previous case study <span class="arrow">→</span></a></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="container footer-grid"><span>© <span data-year>2026</span> Đạt Tiến.</span><div class="footer-links"><a href="../../">Home</a><a href="../context-video-translator/">Context Translator</a><a href="../../resume/">Résumé</a></div></div></footer>
+</body>
+</html>
