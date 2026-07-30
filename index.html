@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <script>document.documentElement.classList.add('js')</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Đạt Tiến — Software Engineer building practical AI and systems tools</title>
+  <meta name="description" content="Engineering portfolio of Đạt Tiến: context-aware video subtitles, Android-to-Windows input systems, AI integration, Python, Kotlin and browser tooling.">
+  <meta name="theme-color" content="#080a0f">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Đạt Tiến — Practical AI & Systems Engineering">
+  <meta property="og:description" content="Selected work across browser extensions, AI integration, mobile, networking and Win32 systems.">
+  <meta property="og:image" content="https://ptd150101.github.io/portfolio-dtp/assets/og-home.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/styles.css">
+  <script src="assets/script.js" defer></script>
+  <link rel="canonical" href="https://ptd150101.github.io/portfolio-dtp/">
+  <link rel="manifest" href="site.webmanifest">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Phan Tiến Đạt","alternateName":"Đạt Tiến","jobTitle":"Software Engineer","email":"mailto:dnh30701@gmail.com","url":"https://ptd150101.github.io/portfolio-dtp/","sameAs":["https://github.com/ptd150101"],"alumniOf":{"@type":"CollegeOrUniversity","name":"Hanoi University of Science and Technology"}}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" data-header>
+    <div class="container nav-wrap">
+      <a class="brand" href="./" aria-label="Đạt Tiến home">
+        <span class="brand-mark">DT</span>
+        <span>Đạt Tiến</span>
+      </a>
+      <nav class="nav-links" data-nav-links aria-label="Primary navigation">
+        <a href="#work">Work</a>
+        <a href="#principles">Principles</a>
+        <a href="#about">About</a>
+        <a href="resume/">Résumé</a>
+        <a href="https://github.com/ptd150101" target="_blank" rel="noreferrer">GitHub ↗</a>
+      </nav>
+      <div class="button-row">
+        <button class="icon-button" type="button" data-theme-toggle aria-label="Switch theme">◑</button>
+        <button class="icon-button mobile-toggle" type="button" data-menu-toggle aria-expanded="false" aria-label="Open navigation">Menu</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="reveal">
+          <span class="status-pill"><span class="status-dot"></span> Based in Hanoi · Open to engineering opportunities</span>
+          <h1>I build <span class="gradient-text">practical AI</span> and systems tools.</h1>
+          <p class="hero-copy">Software Engineer focused on AI integration, Python systems, browser automation and cross-platform products that solve concrete workflow problems.</p>
+          <div class="button-row">
+            <a class="button primary" href="#work">View selected work <span class="arrow">→</span></a>
+            <a class="button" href="resume/">Print / save résumé</a>
+            <a class="button ghost" href="https://github.com/ptd150101" target="_blank" rel="noreferrer">GitHub profile ↗</a>
+          </div>
+        </div>
+
+        <div class="hero-system reveal" aria-label="Animated illustration connecting browser AI tools and Android-to-Windows systems">
+          <div class="window-bar">
+            <span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span>
+            <span class="window-title">engineering-workbench.local</span>
+          </div>
+          <span class="floating-label label-browser">BROWSER / CAPTIONS</span>
+          <span class="floating-label label-llm">LLM / LOCAL API</span>
+          <div class="video-scene">
+            <div class="video-person"></div>
+            <div class="subtitle-demo">
+              <div class="jp-line" lang="ja"><span class="jp-base">昨日、日本語を勉強しました。</span><span class="jp-active">昨日、日本語を勉強しました。</span></div>
+              <div class="vi-line" lang="vi">Hôm qua tôi đã học tiếng Nhật.</div>
+            </div>
+          </div>
+          <div class="system-footer">
+            <div class="device-card">
+              <span class="device-icon">AND</span>
+              <strong>Android input state</strong>
+              <span>Shortcut-only interception</span>
+            </div>
+            <div class="packet-line" aria-hidden="true"><span class="packet"></span></div>
+            <div class="device-card">
+              <span class="device-icon">WIN</span>
+              <strong>Windows agent</strong>
+              <span>TCP protocol → Win32 SendInput</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="proof-strip" aria-label="Technical focus">
+      <div class="container proof-list">
+        <span>Browser Extensions</span>
+        <span>AI Integration</span>
+        <span>Python</span>
+        <span>Kotlin</span>
+        <span>TCP</span>
+        <span>Win32</span>
+      </div>
+    </div>
+
+    <section class="section" id="work">
+      <div class="container">
+        <span class="section-label">Selected work</span>
+        <h2 class="section-title">Products built around real constraints, not idealized demos.</h2>
+        <p class="section-intro">Two projects show the same engineering approach: preserve the reliable path, intervene only where necessary, and recover safely when platforms behave inconsistently.</p>
+
+        <div class="project-grid">
+          <article class="project-card translator reveal">
+            <div class="project-copy">
+              <span class="project-index">01 / Featured project</span>
+              <h3 class="project-title">Context Video Translator</h3>
+              <p class="project-description">A Chrome extension that captures native YouTube and Udemy captions, translates upcoming cues with surrounding context and renders a synchronized bilingual study overlay.</p>
+              <div class="tech-list" aria-label="Technologies">
+                <span class="tech-chip">Chrome MV3</span><span class="tech-chip">JavaScript</span><span class="tech-chip">OpenAI-compatible APIs</span><span class="tech-chip">IndexedDB</span><span class="tech-chip">Kuromoji</span>
+              </div>
+              <div class="button-row">
+                <a class="button primary" href="projects/context-video-translator/">Read case study <span class="arrow">→</span></a>
+                <a class="button ghost" href="https://github.com/ptd150101/context-video-translator" target="_blank" rel="noreferrer">Source ↗</a>
+              </div>
+            </div>
+            <div class="project-visual" aria-label="Japanese study subtitle interface illustration">
+              <div class="browser-mock">
+                <div class="browser-top"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span><span class="address-bar"></span></div>
+                <div class="study-screen">
+                  <div class="study-heading">REALTIME BILINGUAL SUBTITLES · JAPANESE STUDY MODE</div>
+                  <div class="study-subtitle">
+                    <div class="furigana-row" lang="ja">
+                      <span class="token noun"><small>きのう</small>昨日</span>
+                      <span class="token particle"><small>&nbsp;</small>、</span>
+                      <span class="token noun"><small>にほんご</small>日本語</span>
+                      <span class="token particle"><small>&nbsp;</small>を</span>
+                      <span class="token verb"><small>べんきょう</small>勉強</span>
+                      <span class="token verb"><small>&nbsp;</small>しました</span>
+                    </div>
+                    <div class="study-translation" lang="vi">Hôm qua tôi đã học tiếng Nhật.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="project-card remotekey reveal">
+            <div class="project-copy">
+              <span class="project-index">02 / Cross-platform system</span>
+              <h3 class="project-title">RemoteKey</h3>
+              <p class="project-description">A shortcut-only Android-to-Windows input bridge that restores desktop key combinations consumed by Android while preserving the remote application’s native keyboard path.</p>
+              <div class="tech-list" aria-label="Technologies">
+                <span class="tech-chip">Kotlin</span><span class="tech-chip">AccessibilityService</span><span class="tech-chip">TCP JSON Lines</span><span class="tech-chip">Python</span><span class="tech-chip">Win32 SendInput</span>
+              </div>
+              <div class="button-row">
+                <a class="button primary" href="projects/remotekey/">Read case study <span class="arrow">→</span></a>
+                <a class="button ghost" href="https://github.com/ptd150101/android-remote-keyboard" target="_blank" rel="noreferrer">Source ↗</a>
+              </div>
+            </div>
+            <div class="project-visual" aria-label="Android to Windows shortcut relay illustration">
+              <div class="remote-scene">
+                <div class="remote-device">
+                  <span class="eyebrow">Android tablet</span>
+                  <div class="remote-screen"><span class="remote-line"></span><span class="remote-line w70"></span><span class="remote-line w45"></span></div>
+                  <div class="keyboard-keys"><span class="key hot">ALT</span><span class="key hot">TAB</span><span class="key">WIN</span><span class="key">E</span></div>
+                </div>
+                <div class="remote-bridge"><span>TCP</span><div class="packet-line"><span class="packet"></span></div><span>JSONL</span></div>
+                <div class="remote-device pc">
+                  <span class="eyebrow">Windows PC</span>
+                  <div class="remote-screen"><span class="remote-line w45"></span><span class="remote-line"></span><span class="remote-line w70"></span></div>
+                  <div class="keyboard-keys"><span class="key hot">ALT</span><span class="key hot">TAB</span><span class="key">API</span><span class="key">VK</span></div>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="principles">
+      <div class="container">
+        <span class="section-label">How I build</span>
+        <h2 class="section-title">A small set of principles across very different systems.</h2>
+        <div class="principles-grid">
+          <article class="info-card reveal">
+            <span class="number">01</span>
+            <h3>Preserve the fast path</h3>
+            <p>Do not replace a working native pipeline. Subtitle timing stays platform-driven; ordinary keyboard input stays on the remote app’s lowest-latency route.</p>
+          </article>
+          <article class="info-card reveal">
+            <span class="number">02</span>
+            <h3>Design for inconsistent platforms</h3>
+            <p>YouTube, Udemy, Android firmware and Windows expose different failure modes. Adapters, validation and fallback paths belong in the architecture from the start.</p>
+          </article>
+          <article class="info-card reveal">
+            <span class="number">03</span>
+            <h3>Recover to a safe state</h3>
+            <p>A stale caption must not show the wrong language. A network disconnect must not leave Alt or Windows held down. Consistency is a product feature.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-tight">
+      <div class="container">
+        <span class="section-label">Technical range</span>
+        <div class="capability-grid">
+          <article class="capability-card reveal">
+            <h3>Product engineering</h3>
+            <ul class="capability-list">
+              <li>Browser extensions</li><li>Realtime UI state</li><li>AI model integration</li><li>Caption and NLP processing</li><li>Local persistence</li><li>Accessible interfaces</li>
+            </ul>
+          </article>
+          <article class="capability-card reveal">
+            <h3>Systems engineering</h3>
+            <ul class="capability-list">
+              <li>TCP protocols</li><li>Concurrency</li><li>Native OS APIs</li><li>Cross-platform packaging</li><li>Failure recovery</li><li>Automation tooling</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="about">
+      <div class="container about-grid">
+        <aside class="profile-card reveal">
+          <div class="profile-avatar" aria-label="Đạt Tiến initials">DT</div>
+          <div class="profile-meta">
+            <strong>Phan Tiến Đạt</strong>
+            <span>Software Engineer · Hanoi, Vietnam</span>
+            <span>HUST · Applied Mathematics & Informatics</span>
+            <a href="https://github.com/ptd150101" target="_blank" rel="noreferrer">github.com/ptd150101 ↗</a>
+          </div>
+        </aside>
+        <div class="about-copy reveal">
+          <span class="section-label">About</span>
+          <h2>I turn difficult integrations into usable tools.</h2>
+          <p>My work sits between backend engineering, applied AI and systems integration. I enjoy the parts where APIs are incomplete, timing is unstable, operating systems disagree and a product still needs to feel simple.</p>
+          <p>I have built retrieval systems, speech and multimedia pipelines, automation tools, browser extensions and native device bridges. My long-term direction is Python backend and technical leadership, supported by practical AI experience.</p>
+          <div class="timeline" aria-label="Career timeline">
+            <article class="timeline-item"><span>2024 — 2025</span><h3>AI Engineer / Python Developer</h3><p>RAG systems, FastAPI services, hybrid retrieval, pgvector, BM25, Langfuse and multi-tenant product integrations.</p></article>
+            <article class="timeline-item"><span>2023 — 2024</span><h3>Speech Processing & AI Multimedia</h3><p>Speech recognition, translation, diarization, OCR, TTS/RVC and browser automation for multimedia workflows.</p></article>
+            <article class="timeline-item"><span>Current focus</span><h3>Backend systems with applied AI</h3><p>Reliable Python services, system integration, developer tooling and product-minded engineering.</p></article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="contact">
+      <div class="container">
+        <div class="contact-panel reveal">
+          <span class="section-label">Contact</span>
+          <h2>Have a backend, AI integration or automation problem?</h2>
+          <p>I am interested in roles and collaborations where engineering quality matters as much as model capability.</p>
+          <div class="button-row">
+            <a class="button primary" href="https://github.com/ptd150101" target="_blank" rel="noreferrer">Start on GitHub <span class="arrow">→</span></a>
+            <a class="button" href="resume/">Print / save résumé</a>
+            <a class="button ghost" href="mailto:dnh30701@gmail.com">dnh30701@gmail.com</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <span>© <span data-year>2026</span> Đạt Tiến. Built as a dependency-free static portfolio.</span>
+      <div class="footer-links"><a href="projects/context-video-translator/">Context Translator</a><a href="projects/remotekey/">RemoteKey</a><a href="resume/">Résumé</a></div>
+    </div>
+  </footer>
+</body>
+</html>
