@@ -1,9 +1,9 @@
 {
-  "run_id": 30661904128,
-  "run_number": 95,
+  "run_id": 30666670505,
+  "run_number": 96,
   "event": "schedule",
-  "head_sha": "7185e6234587875c24d48fbac969bfd0e755162a",
-  "recorded_at": "2026-07-31T20:14:18.122413+00:00",
+  "head_sha": "6519180a6438083b4efa329ed1b3933b9be251b4",
+  "recorded_at": "2026-07-31T21:31:45.782549+00:00",
   "source_hygiene": "success",
   "static_quality": "failure",
   "browser_quality": "failure",
