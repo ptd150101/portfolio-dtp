@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://ptd150101.github.io/portfolio-dtp/</loc></url>
-  <url><loc>https://ptd150101.github.io/portfolio-dtp/projects/context-video-translator/</loc></url>
-  <url><loc>https://ptd150101.github.io/portfolio-dtp/projects/remotekey/</loc></url>
-  <url><loc>https://ptd150101.github.io/portfolio-dtp/resume/</loc></url>
+  <url>
+    <loc>https://ptd150101.github.io/portfolio-dtp/</loc>
+    <lastmod>2026-07-31</lastmod>
+  </url>
+  <url>
+    <loc>https://ptd150101.github.io/portfolio-dtp/projects/context-video-translator/</loc>
+    <lastmod>2026-07-31</lastmod>
+  </url>
+  <url>
+    <loc>https://ptd150101.github.io/portfolio-dtp/projects/remotekey/</loc>
+    <lastmod>2026-07-31</lastmod>
+  </url>
+  <url>
+    <loc>https://ptd150101.github.io/portfolio-dtp/resume/</loc>
+    <lastmod>2026-07-31</lastmod>
+  </url>
+  <url>
+    <loc>https://ptd150101.github.io/portfolio-dtp/privacy/</loc>
+    <lastmod>2026-07-31</lastmod>
+  </url>
 </urlset>
