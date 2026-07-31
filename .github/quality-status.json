@@ -1,11 +1,11 @@
 {
-  "run_id": 30607859844,
-  "run_number": 83,
+  "run_id": 30607920277,
+  "run_number": 84,
   "event": "push",
-  "head_sha": "047d376f51b45d5de89e8b1abc44e1798090a47c",
-  "recorded_at": "2026-07-31T05:51:14.744271+00:00",
+  "head_sha": "514d3815b417f2a01182042a93aadea637d6b7f6",
+  "recorded_at": "2026-07-31T05:54:50.065773+00:00",
   "source_hygiene": "success",
   "static_quality": "failure",
-  "browser_quality": "cancelled",
-  "lighthouse": "cancelled"
+  "browser_quality": "failure",
+  "lighthouse": "failure"
 }
