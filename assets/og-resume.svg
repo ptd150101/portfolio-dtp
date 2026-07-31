@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Phan Tiến Đạt résumé</title>
+  <desc id="desc">Social preview for the software engineering résumé of Phan Tiến Đạt.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#080a0f"/><stop offset="1" stop-color="#131b2b"/></linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#9b8cff"/><stop offset=".55" stop-color="#62d9ff"/><stop offset="1" stop-color="#66e4a7"/></linearGradient>
+  </defs>
+  <rect width="1200" height="630" rx="28" fill="url(#bg)"/>
+  <circle cx="1000" cy="80" r="280" fill="#9b8cff" opacity=".10"/>
+  <circle cx="110" cy="600" r="260" fill="#62d9ff" opacity=".08"/>
+  <rect x="84" y="76" width="1032" height="478" rx="24" fill="#111722" stroke="#9baac7" stroke-opacity=".28"/>
+  <rect x="124" y="116" width="94" height="94" rx="22" fill="url(#accent)"/>
+  <text x="171" y="177" fill="#071018" font-family="Inter,Arial,sans-serif" font-size="42" font-weight="900" text-anchor="middle">DT</text>
+  <text x="252" y="151" fill="#f5f7fb" font-family="Inter,Arial,sans-serif" font-size="48" font-weight="800">Phan Tiến Đạt</text>
+  <text x="252" y="191" fill="#a4afc2" font-family="Inter,Arial,sans-serif" font-size="22">Python · Backend · AI Systems · Cross-platform Engineering</text>
+  <rect x="124" y="256" width="418" height="18" rx="9" fill="#62d9ff" opacity=".75"/>
+  <rect x="124" y="298" width="824" height="13" rx="7" fill="#778298" opacity=".48"/>
+  <rect x="124" y="329" width="714" height="13" rx="7" fill="#778298" opacity=".38"/>
+  <rect x="124" y="378" width="332" height="18" rx="9" fill="#9b8cff" opacity=".75"/>
+  <rect x="124" y="420" width="872" height="13" rx="7" fill="#778298" opacity=".48"/>
+  <rect x="124" y="451" width="758" height="13" rx="7" fill="#778298" opacity=".38"/>
+  <text x="124" y="520" fill="#66e4a7" font-family="SFMono-Regular,Consolas,monospace" font-size="18" font-weight="700">ENGINEERING RÉSUMÉ · HA NOI, VIET NAM</text>
+</svg>
