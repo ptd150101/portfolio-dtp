@@ -114,6 +114,7 @@ def transform_html(path: Path, output: Path, site_url: str) -> None:
     rel = path.relative_to(output).as_posix()
     cfg = PAGE_META.get(rel)
     text = path.read_text(encoding="utf-8")
+    text = text.replace(DEFAULT_URL, site_url.rstrip("/"))
     text = re.sub(r'\s*<link\s+rel=["\']manifest["\'][^>]*>\s*', "\n", text, flags=re.I)
     text = ensure_accessible_structure(text)
     analytics_src = relative_asset(rel, "assets/analytics.js")
