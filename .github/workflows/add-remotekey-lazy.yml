@@ -1,0 +1,44 @@
+name: Add RemoteKey lazy loading
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/add-remotekey-lazy.yml
+
+permissions:
+  contents: write
+
+jobs:
+  update-markup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Add lazy loading to RemoteKey problem image
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('projects/remotekey/index.html')
+          content = path.read_text(encoding='utf-8')
+          old = 'src="../../assets/remotekey-problem.png" width="1672" height="941" decoding="async"'
+          new = 'src="../../assets/remotekey-problem.png" width="1672" height="941" loading="lazy" decoding="async"'
+
+          if new not in content:
+              if old not in content:
+                  raise SystemExit('RemoteKey problem image markup was not found.')
+              path.write_text(content.replace(old, new, 1), encoding='utf-8')
+          PY
+
+      - name: Remove one-time workflow
+        run: rm .github/workflows/add-remotekey-lazy.yml
+
+      - name: Commit update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add projects/remotekey/index.html .github/workflows/add-remotekey-lazy.yml
+          git commit -m "Lazy-load RemoteKey problem image"
+          git push
