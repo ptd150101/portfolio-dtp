@@ -5,12 +5,27 @@
   const systemLight = window.matchMedia?.('(prefers-color-scheme: light)').matches;
   root.dataset.theme = savedTheme || (systemLight ? 'light' : 'dark');
 
+  const menuButton = document.querySelector('[data-menu-toggle]');
+  const nav = document.querySelector('[data-nav-links]');
+
   const updateThemeButtons = () => {
     document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
       const light = root.dataset.theme === 'light';
       button.setAttribute('aria-label', light ? 'Switch to dark theme' : 'Switch to light theme');
       button.textContent = light ? '◐' : '◑';
     });
+  };
+
+  const setMenuOpen = (open, { returnFocus = false } = {}) => {
+    if (!menuButton || !nav) return;
+    nav.classList.toggle('open', open);
+    menuButton.setAttribute('aria-expanded', String(open));
+    menuButton.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+    if (open) {
+      nav.querySelector('a')?.focus();
+    } else if (returnFocus) {
+      menuButton.focus();
+    }
   };
 
   document.addEventListener('click', async (event) => {
@@ -21,11 +36,14 @@
       updateThemeButtons();
     }
 
-    const menuButton = event.target.closest('[data-menu-toggle]');
-    if (menuButton) {
-      const nav = document.querySelector('[data-nav-links]');
-      const open = nav?.classList.toggle('open') || false;
-      menuButton.setAttribute('aria-expanded', String(open));
+    const clickedMenuButton = event.target.closest('[data-menu-toggle]');
+    if (clickedMenuButton) {
+      setMenuOpen(clickedMenuButton.getAttribute('aria-expanded') !== 'true');
+      return;
+    }
+
+    if (nav?.classList.contains('open') && !event.target.closest('[data-nav-links]')) {
+      setMenuOpen(false);
     }
 
     const copyButton = event.target.closest('[data-copy]');
@@ -38,13 +56,20 @@
         const previous = copyButton.textContent;
         copyButton.textContent = 'Copied';
         setTimeout(() => { copyButton.textContent = previous; }, 1400);
-      } catch { copyButton.textContent = 'Select text'; }
+      } catch {
+        copyButton.textContent = 'Select text';
+      }
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && nav?.classList.contains('open')) {
+      setMenuOpen(false, { returnFocus: true });
     }
   });
 
   document.querySelectorAll('[data-nav-links] a').forEach((link) => link.addEventListener('click', () => {
-    document.querySelector('[data-nav-links]')?.classList.remove('open');
-    document.querySelector('[data-menu-toggle]')?.setAttribute('aria-expanded', 'false');
+    setMenuOpen(false);
   }));
 
   const header = document.querySelector('[data-header]');
@@ -62,7 +87,8 @@
   }, { threshold: 0.12 }) : null;
   document.querySelectorAll('.reveal').forEach((element) => observer ? observer.observe(element) : element.classList.add('visible'));
 
-  const year = document.querySelector('[data-year]');
-  if (year) year.textContent = String(new Date().getFullYear());
+  document.querySelectorAll('[data-year]').forEach((year) => {
+    year.textContent = String(new Date().getFullYear());
+  });
   updateThemeButtons();
 })();
