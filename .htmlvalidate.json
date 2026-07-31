@@ -5,14 +5,10 @@
     "attribute-boolean-style": "off",
     "attribute-empty-style": "off",
     "doctype-style": "off",
-    "element-permitted-content": "error",
     "heading-level": "warn",
     "long-title": "off",
     "no-inline-style": "off",
     "no-raw-characters": "off",
-    "prefer-native-element": "warn",
-    "require-sri": "off",
-    "tel-non-breaking": "off",
     "void-style": "off"
   }
 }
