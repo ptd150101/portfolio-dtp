@@ -1,0 +1,43 @@
+name: Scheduled external link audit
+
+on:
+  schedule:
+    - cron: '15 3 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  external-links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Restore Lychee cache
+        uses: actions/cache@v4
+        with:
+          path: .lycheecache
+          key: lychee-${{ github.run_id }}
+          restore-keys: lychee-
+      - name: Check external links
+        id: lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --cache
+            --max-cache-age 7d
+            --no-progress
+            --exclude-mail
+            --exclude 'https://www.linkedin.com/.*'
+            './**/*.html'
+            './**/*.md'
+          format: markdown
+          output: reports/external-links.md
+          fail: false
+      - name: Upload link report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: external-link-report
+          path: reports/external-links.md
+          if-no-files-found: warn
