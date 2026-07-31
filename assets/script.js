@@ -7,6 +7,17 @@
 
   const menuButton = document.querySelector('[data-menu-toggle]');
   const nav = document.querySelector('[data-nav-links]');
+  const main = document.querySelector('main');
+
+  if (main) {
+    if (!main.id) main.id = 'main';
+    if (!main.hasAttribute('tabindex')) main.tabIndex = -1;
+  }
+  if (nav && !nav.id) nav.id = 'primary-navigation';
+  if (menuButton) {
+    menuButton.setAttribute('aria-controls', nav?.id || 'primary-navigation');
+    if (!menuButton.hasAttribute('aria-label')) menuButton.setAttribute('aria-label', 'Open navigation');
+  }
 
   const updateThemeButtons = () => {
     document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
