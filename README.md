@@ -1,51 +1,85 @@
 # Đạt Tiến — Engineering Portfolio
 
-A dependency-free, multi-page technical portfolio presenting two engineering case studies:
+A multi-page static engineering portfolio presenting two product case studies:
 
 - **Context Video Translator** — context-aware bilingual subtitle extension for YouTube and Udemy.
 - **RemoteKey** — shortcut-only Android-to-Windows input bridge.
 
-## Pages
+## Public pages
 
 - `/` — homepage, selected work, engineering principles, background and contact.
-- `/projects/context-video-translator/` — full browser/AI case study.
-- `/projects/remotekey/` — full Android/network/Win32 case study.
+- `/projects/context-video-translator/` — browser-extension and AI product case study.
+- `/projects/remotekey/` — Android, networking and Win32 product case study.
 - `/resume/` — print-friendly résumé with browser PDF export.
+- `/privacy/` — privacy-first analytics disclosure.
 - `/404.html` — custom not-found page.
 
-## Features
+## Product and accessibility features
 
-- Responsive layout with mobile navigation.
+- Responsive desktop, tablet and mobile layouts.
 - Dark and light themes saved in `localStorage`.
-- Reduced-motion support.
-- Semantic HTML, skip links, focus states and accessible navigation.
-- CSS-only project illustrations and meaningful animations.
-- Copyable protocol and prompt examples.
-- Open Graph graphics, sitemap, robots file and web manifest.
-- Automatic GitHub Pages deployment workflow.
-- No runtime dependencies, build step or third-party asset requests.
+- Reduced-motion and forced-colors safeguards.
+- Semantic landmarks, skip links, focus management and keyboard-operable navigation.
+- Lazy-loaded below-the-fold imagery with intrinsic dimensions.
+- Original PNG product screenshots plus scalable SVG diagrams.
+- Canonical URLs, Open Graph/Twitter previews, structured data, sitemap and robots file.
+- No service worker or incomplete PWA manifest.
 
-## Local development
+## Quality platform
 
-Serve the repository root with any static server:
+The GitHub Pages workflow blocks deployment until these jobs pass:
+
+1. **Static quality** — HTML validation, internal links and anchors, image/asset rules and sitemap coverage.
+2. **Browser and accessibility quality** — Playwright smoke tests, mobile reflow and axe WCAG checks.
+3. **Lighthouse quality** — performance ≥ 80 and accessibility, best practices and SEO ≥ 95.
+
+Reports are uploaded as GitHub Actions artifacts. A separate scheduled workflow performs a non-blocking external-link audit.
+
+## Local validation
+
+Install the development-only quality dependencies:
 
 ```bash
-npx http-server . -p 4173
+npm install
+npx playwright install chromium
 ```
 
-or:
+Run static checks:
 
 ```bash
-python -m http.server 4173
+npm run quality
 ```
 
-Then open `http://localhost:4173`.
+Run browser and accessibility checks:
 
-## Deploying
+```bash
+npm run test:browser
+```
 
-The workflow at `.github/workflows/pages.yml` uploads the repository as a Pages artifact and deploys on every push to `main`. In repository settings, set **Pages → Source** to **GitHub Actions** once if it is not already enabled.
+Run Lighthouse CI:
 
-The site is written with relative internal links so it works as a GitHub project site under `/portfolio-dtp/` as well as on a custom domain.
+```bash
+npm run lhci
+```
+
+The local test server exposes the repository under the same `/portfolio-dtp/` prefix as GitHub Pages.
+
+## Deployment
+
+`.github/workflows/pages.yml` builds a clean `_site` artifact and deploys it through GitHub Pages after all quality jobs succeed.
+
+Optional repository Actions variables:
+
+- `SITE_URL` — final custom-domain origin, for example `https://example.dev`.
+- `CF_ANALYTICS_TOKEN` — Cloudflare Web Analytics token. Analytics stays disabled when this variable is empty.
+
+The build rewrites canonical, social, structured-data, sitemap and robots URLs for `SITE_URL`, creates `CNAME` for a custom hostname and injects analytics only into the deployment artifact.
+
+Operational details:
+
+- `docs/accessibility-audit.md`
+- `docs/analytics.md`
+- `docs/custom-domain.md`
 
 ## Project sources
 
