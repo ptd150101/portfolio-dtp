@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -18,13 +18,68 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  static-quality:
-    name: Static quality
+  source-hygiene:
+    name: Source hygiene
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout pull request
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v6
+      - name: Checkout latest main
+        if: github.event_name != 'pull_request'
         uses: actions/checkout@v6
         with:
+          ref: main
+          fetch-depth: 0
+      - name: Remove incomplete PWA configuration
+        if: github.event_name != 'pull_request'
+        run: |
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+
+          for name in (
+              'index.html',
+              'projects/context-video-translator/index.html',
+              'projects/remotekey/index.html',
+          ):
+              path = Path(name)
+              text = path.read_text(encoding='utf-8')
+              text = re.sub(r'\s*<link\s+rel=["\']manifest["\'][^>]*>\s*', '\n', text, flags=re.I)
+              path.write_text(text, encoding='utf-8')
+
+          manifest = Path('site.webmanifest')
+          if manifest.exists():
+              manifest.unlink()
+          PY
+      - name: Commit source cleanup
+        if: github.event_name != 'pull_request'
+        run: |
+          if git diff --quiet -- index.html projects/context-video-translator/index.html projects/remotekey/index.html site.webmanifest; then
+            echo 'PWA source cleanup is already complete.'
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A index.html projects/context-video-translator/index.html projects/remotekey/index.html site.webmanifest
+          git commit -m "Remove incomplete PWA manifest"
+          git push origin HEAD:main
+
+  static-quality:
+    name: Static quality
+    needs: source-hygiene
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout pull request
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Checkout latest main
+        if: github.event_name != 'pull_request'
+        uses: actions/checkout@v6
+        with:
+          ref: main
           fetch-depth: 0
       - name: Use Node.js
         uses: actions/setup-node@v4
@@ -50,10 +105,17 @@ jobs:
 
   browser-quality:
     name: Browser and accessibility quality
+    needs: source-hygiene
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout pull request
+        if: github.event_name == 'pull_request'
         uses: actions/checkout@v6
+      - name: Checkout latest main
+        if: github.event_name != 'pull_request'
+        uses: actions/checkout@v6
+        with:
+          ref: main
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
@@ -76,10 +138,17 @@ jobs:
 
   lighthouse:
     name: Lighthouse quality
+    needs: source-hygiene
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout pull request
+        if: github.event_name == 'pull_request'
         uses: actions/checkout@v6
+      - name: Checkout latest main
+        if: github.event_name != 'pull_request'
+        uses: actions/checkout@v6
+        with:
+          ref: main
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
@@ -105,8 +174,10 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout latest main
         uses: actions/checkout@v6
+        with:
+          ref: main
       - name: Install SVG renderer
         run: |
           sudo apt-get update
