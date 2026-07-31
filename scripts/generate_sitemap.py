@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""Generate sitemap.xml from public index pages and their most recent Git dates."""
+"""Generate sitemap.xml and verify that every public route is represented."""
 
 from __future__ import annotations
 
 import argparse
+import re
 import subprocess
+import xml.etree.ElementTree as ET
 from datetime import date
 from pathlib import Path
 from xml.sax.saxutils import escape
@@ -18,6 +20,7 @@ ROUTES = {
     "resume/index.html": "/resume/",
     "privacy/index.html": "/privacy/",
 }
+NS = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
 
 
 def last_modified(path: Path) -> str:
@@ -35,22 +38,56 @@ def last_modified(path: Path) -> str:
     return date.today().isoformat()
 
 
-def render(site_url: str, root: Path = ROOT) -> str:
+def expected_locations(site_url: str) -> set[str]:
+    base = site_url.rstrip("/")
+    return {
+        f"{base}/" if route == "/" else f"{base}{route}"
+        for file_name, route in ROUTES.items()
+        if (ROOT / file_name).exists()
+    }
+
+
+def render(site_url: str) -> str:
     base = site_url.rstrip("/")
     lines = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     for file_name, route in ROUTES.items():
-        file_path = root / file_name
+        file_path = ROOT / file_name
         if not file_path.exists():
             continue
-        loc = f"{base}{route}" if route != "/" else f"{base}/"
+        loc = f"{base}/" if route == "/" else f"{base}{route}"
         lines.extend([
             "  <url>",
             f"    <loc>{escape(loc)}</loc>",
-            f"    <lastmod>{last_modified(ROOT / file_name)}</lastmod>",
+            f"    <lastmod>{last_modified(file_path)}</lastmod>",
             "  </url>",
         ])
     lines.append("</urlset>")
     return "\n".join(lines) + "\n"
+
+
+def validate(output: Path, site_url: str) -> int:
+    if not output.exists():
+        print("sitemap.xml is missing.")
+        return 1
+    try:
+        root = ET.parse(output).getroot()
+    except ET.ParseError as exc:
+        print(f"sitemap.xml is invalid XML: {exc}")
+        return 1
+    locations = {node.text.strip() for node in root.findall("sm:url/sm:loc", NS) if node.text}
+    expected = expected_locations(site_url)
+    if locations != expected:
+        print(f"Sitemap URL mismatch. Expected {sorted(expected)}, found {sorted(locations)}")
+        return 1
+    for node in root.findall("sm:url/sm:lastmod", NS):
+        if not node.text or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", node.text.strip()):
+            print(f"Invalid lastmod value: {node.text!r}")
+            return 1
+    if len(root.findall("sm:url/sm:lastmod", NS)) != len(expected):
+        print("Each sitemap URL must include lastmod.")
+        return 1
+    print(f"sitemap.xml is valid and contains {len(expected)} public routes.")
+    return 0
 
 
 def main() -> int:
@@ -60,15 +97,9 @@ def main() -> int:
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
     output = Path(args.output)
-    expected = render(args.site_url)
     if args.check:
-        current = output.read_text(encoding="utf-8") if output.exists() else ""
-        if current != expected:
-            print("sitemap.xml is stale. Run: python3 scripts/generate_sitemap.py")
-            return 1
-        print("sitemap.xml is up to date.")
-        return 0
-    output.write_text(expected, encoding="utf-8")
+        return validate(output, args.site_url)
+    output.write_text(render(args.site_url), encoding="utf-8")
     print(f"Wrote {output}")
     return 0
 
