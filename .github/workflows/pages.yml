@@ -31,6 +31,11 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
+      - name: Use Node.js
+        if: github.event_name != 'pull_request'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.22.0
       - name: Apply source hygiene
         if: github.event_name != 'pull_request'
         run: |
@@ -38,28 +43,21 @@ jobs:
           import re
           from pathlib import Path
 
-          for name in (
-              'index.html',
-              'projects/context-video-translator/index.html',
-              'projects/remotekey/index.html',
-          ):
-              path = Path(name)
+          ignored = {'node_modules', '_site', 'playwright-report', 'test-results'}
+          for path in Path('.').rglob('*.html'):
+              if any(part in ignored for part in path.parts):
+                  continue
               text = path.read_text(encoding='utf-8')
               text = re.sub(r'\s*<link\s+rel=["\']manifest["\'][^>]*>\s*', '\n', text, flags=re.I)
+              text = re.sub(r'<span\s+aria-current=["\']page["\']>', '<span>', text, flags=re.I)
+              text = re.sub(r'<div(?![^>]*\brole=)([^>]*\baria-label=)', r'<div role="group"\1', text, flags=re.I)
               path.write_text(text, encoding='utf-8')
 
           manifest = Path('site.webmanifest')
           if manifest.exists():
               manifest.unlink()
-
-          prepare = Path('scripts/prepare_site.py')
-          text = prepare.read_text(encoding='utf-8')
-          needle = '    text = path.read_text(encoding="utf-8")\n    text = re.sub('
-          replacement = '    text = path.read_text(encoding="utf-8")\n    text = text.replace(DEFAULT_URL, site_url.rstrip("/"))\n    text = re.sub('
-          if needle in text and 'text = text.replace(DEFAULT_URL' not in text:
-              text = text.replace(needle, replacement, 1)
-              prepare.write_text(text, encoding='utf-8')
           PY
+          npm install --package-lock-only --ignore-scripts --no-audit --no-fund
       - name: Commit source cleanup
         if: github.event_name != 'pull_request'
         run: |
@@ -70,7 +68,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "Complete PWA removal and domain URL rewriting"
+          git commit -m "Normalize portfolio semantics and lock quality dependencies"
           git push origin HEAD:main
 
   static-quality:
@@ -92,9 +90,10 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.16.0
+          node-version: 22.22.0
+          cache: npm
       - name: Install dependencies
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
       - name: Validate HTML
         run: npm run validate:html
       - name: Check local links and anchors
@@ -127,9 +126,10 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.16.0
+          node-version: 22.22.0
+          cache: npm
       - name: Install dependencies
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
       - name: Run Playwright and axe checks
@@ -160,9 +160,10 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.16.0
+          node-version: 22.22.0
+          cache: npm
       - name: Install dependencies
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
       - name: Run Lighthouse CI
         run: npm run lhci
       - name: Upload Lighthouse reports
