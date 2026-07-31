@@ -63,13 +63,13 @@ jobs:
       - name: Commit source cleanup
         if: github.event_name != 'pull_request'
         run: |
-          if git diff --quiet -- index.html projects/context-video-translator/index.html projects/remotekey/index.html site.webmanifest scripts/prepare_site.py; then
+          if git diff --quiet; then
             echo 'Source hygiene is already complete.'
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A index.html projects/context-video-translator/index.html projects/remotekey/index.html site.webmanifest scripts/prepare_site.py
+          git add -A
           git commit -m "Complete PWA removal and domain URL rewriting"
           git push origin HEAD:main
 
