@@ -1,0 +1,27 @@
+{
+  "name": "portfolio-dtp-quality",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Quality, accessibility and Lighthouse checks for the static portfolio.",
+  "scripts": {
+    "validate:html": "html-validate \"index.html\" \"404.html\" \"resume/index.html\" \"privacy/index.html\" \"projects/*/index.html\"",
+    "check:links": "python3 scripts/check_internal_links.py",
+    "check:assets": "python3 scripts/audit_assets.py",
+    "check:sitemap": "python3 scripts/generate_sitemap.py --check",
+    "test:browser": "playwright test",
+    "test:smoke": "playwright test tests/smoke.spec.js",
+    "test:a11y": "playwright test tests/accessibility.spec.js",
+    "lhci": "lhci autorun",
+    "quality": "npm run validate:html && npm run check:links && npm run check:assets && npm run check:sitemap"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.12.1",
+    "@lhci/cli": "0.15.1",
+    "@playwright/test": "1.61.1",
+    "html-validate": "11.5.6"
+  },
+  "engines": {
+    "node": ">=22.16"
+  }
+}
