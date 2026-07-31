@@ -1,4 +1,4 @@
-name: Deploy static portfolio to Pages
+name: Apply portfolio quality upgrade
 
 on:
   push:
@@ -6,29 +6,63 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: pages
-  cancel-in-progress: true
+  group: portfolio-quality-migration
+  cancel-in-progress: false
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  migrate:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v6
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-      - name: Upload static site
-        uses: actions/upload-pages-artifact@v4
         with:
-          path: .
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.16.0
+
+      - name: Install SVG renderer
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends librsvg2-bin
+
+      - name: Apply packaged upgrade
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .portfolio-upgrade/archive_* | base64 --decode > /tmp/portfolio-upgrade.tar.gz
+          tar -xzf /tmp/portfolio-upgrade.tar.gz -C .
+          cat .portfolio-upgrade/migrate_* | base64 --decode > /tmp/apply-repo-changes.py
+          python3 /tmp/apply-repo-changes.py
+
+      - name: Generate social preview PNGs
+        run: |
+          set -euo pipefail
+          rsvg-convert -w 1200 -h 630 assets/og-home.svg -o assets/og-home.png
+          rsvg-convert -w 1200 -h 630 assets/og-remotekey.svg -o assets/og-remotekey.png
+          rsvg-convert -w 1200 -h 630 assets/context-translator-card.svg -o assets/og-context-translator.png
+          rsvg-convert -w 1200 -h 630 assets/og-resume.svg -o assets/og-resume.png
+
+      - name: Create dependency lock and sitemap
+        run: |
+          npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+          python3 scripts/generate_sitemap.py
+
+      - name: Remove migration files
+        run: |
+          rm -rf .portfolio-upgrade
+          rm -f .github/workflows/implement-portfolio-quality.yml
+
+      - name: Commit implementation
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Add portfolio quality, accessibility, analytics and SEO platform"
+          git push
