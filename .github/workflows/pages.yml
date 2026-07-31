@@ -31,7 +31,7 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
-      - name: Remove incomplete PWA configuration
+      - name: Apply source hygiene
         if: github.event_name != 'pull_request'
         run: |
           python3 - <<'PY'
@@ -51,18 +51,26 @@ jobs:
           manifest = Path('site.webmanifest')
           if manifest.exists():
               manifest.unlink()
+
+          prepare = Path('scripts/prepare_site.py')
+          text = prepare.read_text(encoding='utf-8')
+          needle = '    text = path.read_text(encoding="utf-8")\n    text = re.sub('
+          replacement = '    text = path.read_text(encoding="utf-8")\n    text = text.replace(DEFAULT_URL, site_url.rstrip("/"))\n    text = re.sub('
+          if needle in text and 'text = text.replace(DEFAULT_URL' not in text:
+              text = text.replace(needle, replacement, 1)
+              prepare.write_text(text, encoding='utf-8')
           PY
       - name: Commit source cleanup
         if: github.event_name != 'pull_request'
         run: |
-          if git diff --quiet -- index.html projects/context-video-translator/index.html projects/remotekey/index.html site.webmanifest; then
-            echo 'PWA source cleanup is already complete.'
+          if git diff --quiet -- index.html projects/context-video-translator/index.html projects/remotekey/index.html site.webmanifest scripts/prepare_site.py; then
+            echo 'Source hygiene is already complete.'
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A index.html projects/context-video-translator/index.html projects/remotekey/index.html site.webmanifest
-          git commit -m "Remove incomplete PWA manifest"
+          git add -A index.html projects/context-video-translator/index.html projects/remotekey/index.html site.webmanifest scripts/prepare_site.py
+          git commit -m "Complete PWA removal and domain URL rewriting"
           git push origin HEAD:main
 
   static-quality:
@@ -164,6 +172,54 @@ jobs:
           name: lighthouse-reports
           path: .lighthouseci/
           if-no-files-found: ignore
+
+  record-status:
+    name: Record quality status
+    if: always() && github.event_name != 'pull_request'
+    needs: [source-hygiene, static-quality, browser-quality, lighthouse]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Write status snapshot
+        env:
+          SOURCE_RESULT: ${{ needs.source-hygiene.result }}
+          STATIC_RESULT: ${{ needs.static-quality.result }}
+          BROWSER_RESULT: ${{ needs.browser-quality.result }}
+          LIGHTHOUSE_RESULT: ${{ needs.lighthouse.result }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          payload = {
+              'run_id': int(os.environ['GITHUB_RUN_ID']),
+              'run_number': int(os.environ['GITHUB_RUN_NUMBER']),
+              'event': os.environ['GITHUB_EVENT_NAME'],
+              'head_sha': os.environ['GITHUB_SHA'],
+              'recorded_at': datetime.now(timezone.utc).isoformat(),
+              'source_hygiene': os.environ['SOURCE_RESULT'],
+              'static_quality': os.environ['STATIC_RESULT'],
+              'browser_quality': os.environ['BROWSER_RESULT'],
+              'lighthouse': os.environ['LIGHTHOUSE_RESULT'],
+          }
+          Path('.github/quality-status.json').write_text(json.dumps(payload, indent=2) + '\n', encoding='utf-8')
+          PY
+      - name: Commit status snapshot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/quality-status.json
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "Record portfolio quality run $GITHUB_RUN_NUMBER"
+          git push origin HEAD:main
 
   deploy:
     name: Deploy GitHub Pages
