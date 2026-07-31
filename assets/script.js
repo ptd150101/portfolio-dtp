@@ -19,6 +19,24 @@
     if (!menuButton.hasAttribute('aria-label')) menuButton.setAttribute('aria-label', 'Open navigation');
   }
 
+  document.querySelectorAll('div[aria-label]:not([role])').forEach((element) => {
+    element.setAttribute('role', 'group');
+  });
+
+  const normalizedPath = (value) => {
+    const path = value.replace(/index\.html$/, '').replace(/\/+$/, '/');
+    return path || '/';
+  };
+  const currentPath = normalizedPath(location.pathname);
+  document.querySelectorAll('a[href]').forEach((link) => {
+    try {
+      const target = new URL(link.getAttribute('href'), location.href);
+      if (target.origin === location.origin && !target.hash && normalizedPath(target.pathname) === currentPath) {
+        link.setAttribute('aria-current', 'page');
+      }
+    } catch {}
+  });
+
   const updateThemeButtons = () => {
     document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
       const light = root.dataset.theme === 'light';
