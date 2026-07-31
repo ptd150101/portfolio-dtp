@@ -9,6 +9,7 @@
     "long-title": "off",
     "no-inline-style": "off",
     "no-raw-characters": "off",
+    "tel-non-breaking": "off",
     "void-style": "off"
   }
 }
