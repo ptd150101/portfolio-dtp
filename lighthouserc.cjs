@@ -1,7 +1,7 @@
 module.exports = {
   ci: {
     collect: {
-      startServerCommand: 'python3 scripts/serve_portfolio.py --port 4173',
+      startServerCommand: 'python3 scripts/build_site.py --output _site && python3 scripts/serve_portfolio.py --port 4173 --root _site',
       startServerReadyPattern: 'Serving portfolio',
       startServerReadyTimeout: 30000,
       url: [
