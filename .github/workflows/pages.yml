@@ -129,3 +129,62 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  production-status:
+    name: Report production status
+    if: always() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: [static-quality, browser-quality, lighthouse, deploy]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      statuses: write
+    steps:
+      - name: Publish commit status
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          STATIC_RESULT: ${{ needs.static-quality.result }}
+          BROWSER_RESULT: ${{ needs.browser-quality.result }}
+          LIGHTHOUSE_RESULT: ${{ needs.lighthouse.result }}
+          DEPLOY_RESULT: ${{ needs.deploy.result }}
+          TARGET_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import urllib.request
+
+          results = {
+              "static": os.environ["STATIC_RESULT"],
+              "browser": os.environ["BROWSER_RESULT"],
+              "lighthouse": os.environ["LIGHTHOUSE_RESULT"],
+              "deploy": os.environ["DEPLOY_RESULT"],
+          }
+          success = all(value == "success" for value in results.values())
+          state = "success" if success else "failure"
+          description = (
+              "Quality gates passed and GitHub Pages deployed"
+              if success
+              else "Production pipeline failed: " + ", ".join(f"{key}={value}" for key, value in results.items())
+          )
+          payload = json.dumps(
+              {
+                  "state": state,
+                  "context": "portfolio/production",
+                  "description": description[:140],
+                  "target_url": os.environ["TARGET_URL"],
+              }
+          ).encode("utf-8")
+          request = urllib.request.Request(
+              f"https://api.github.com/repos/{os.environ['GITHUB_REPOSITORY']}/statuses/{os.environ['GITHUB_SHA']}",
+              data=payload,
+              method="POST",
+              headers={
+                  "Authorization": f"Bearer {os.environ['GH_TOKEN']}",
+                  "Accept": "application/vnd.github+json",
+                  "X-GitHub-Api-Version": "2022-11-28",
+                  "Content-Type": "application/json",
+              },
+          )
+          with urllib.request.urlopen(request, timeout=30) as response:
+              print(f"Published production status: {state} ({response.status})")
+          PY
