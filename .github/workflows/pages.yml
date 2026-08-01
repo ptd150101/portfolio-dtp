@@ -39,7 +39,7 @@ jobs:
         run: npm run check:sitemap
       - name: Upload static audit reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: static-quality-reports
           path: reports/
@@ -64,7 +64,7 @@ jobs:
         run: npm run test:browser
       - name: Upload Playwright report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-report
           path: |
@@ -89,7 +89,7 @@ jobs:
         run: npm run lhci
       - name: Upload Lighthouse reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: lighthouse-reports
           path: .lighthouseci/
