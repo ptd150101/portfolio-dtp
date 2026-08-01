@@ -18,6 +18,20 @@ def optimize_artifact(output: Path) -> None:
         ".resume-entry span { color: #6c788e; font-size: 12px; }",
         ".resume-entry span { color: #5f6b80; font-size: 12px; }",
     )
+    css += """
+
+/* Résumé is intentionally a fixed light document; do not inherit the dark
+   translucent button surface from the main portfolio theme. */
+.resume-page .resume-actions .button:not(.primary) {
+  color: #172033;
+  background: #ffffff;
+  border-color: #8a96aa;
+}
+.resume-page .resume-actions .button:not(.primary):hover {
+  background: #f8fafc;
+  border-color: #5f6b80;
+}
+"""
     styles.write_text(css, encoding="utf-8")
 
     context_page = output / "projects" / "context-video-translator" / "index.html"
