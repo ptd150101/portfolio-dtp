@@ -19,7 +19,7 @@ export default defineConfig({
     video: 'retain-on-failure',
   },
   webServer: {
-    command: 'python3 scripts/serve_portfolio.py --port 4173',
+    command: 'python3 scripts/build_site.py --output _site && python3 scripts/serve_portfolio.py --port 4173 --root _site',
     url: 'http://127.0.0.1:4173/portfolio-dtp/',
     reuseExistingServer: !process.env.CI,
     timeout: 30_000,
